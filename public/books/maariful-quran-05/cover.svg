@@ -19,7 +19,7 @@
     <rect x="40" y="40" width="480" height="720" rx="12" fill="url(#coverGrad)" filter="url(#ds)"/>
     <rect x="40" y="40" width="480" height="80" rx="12" fill="rgba(255,255,255,0.04)"/>
     <text x="300" y="300" text-anchor="middle" fill="#2b1f12" font-family="Noto Sans, Arial, sans-serif" style="font-weight:700;">
-      <tspan x="300" dy="0" font-size="40" font-weight="700">maariful quran</tspan><tspan x="300" dy="56" font-size="34" font-weight="700">05 pdf</tspan>
+      <tspan x="300" dy="0" font-size="40" font-weight="700">মাআরেফুল কুরআন</tspan><tspan x="300" dy="56" font-size="34" font-weight="700">(০৫)</tspan>
     </text>
     
   </g>
