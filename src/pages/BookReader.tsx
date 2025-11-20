@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import {
@@ -38,7 +38,19 @@ export default function BookReader() {
   const [documentLoaded, setDocumentLoaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  // Memoize PDF options to prevent re-initialization
+  const pdfOptions = useMemo(() => ({
+    cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+    cMapPacked: true,
+    standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
+  }), []);
+
   useEffect(() => {
+    // Reset state when book changes
+    setDocumentLoaded(false);
+    setLoadError(null);
+    setNumPages(0);
+    
     // Load reading progress and bookmarks
     if (book) {
       const progress = getProgress(book.id);
@@ -343,6 +355,7 @@ export default function BookReader() {
             </div>
           ) : (
             <Document
+              key={book.id}
               file={book.pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={onDocumentLoadError}
@@ -354,11 +367,7 @@ export default function BookReader() {
                   </div>
                 </div>
               }
-              options={{
-                cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
-                cMapPacked: true,
-                standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
-              }}
+              options={pdfOptions}
             >
               {documentLoaded && numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page
