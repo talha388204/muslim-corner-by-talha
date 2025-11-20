@@ -15,6 +15,7 @@ import { books } from "@/data/books";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { SearchDialog } from "@/components/reader/SearchDialog";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { addToLibrary, isInLibrary, saveProgress, getProgress, toggleBookmark as toggleBookmarkStorage } from "@/lib/offlineStorage";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -361,10 +362,7 @@ export default function BookReader() {
               onLoadError={onDocumentLoadError}
               loading={
                 <div className="flex h-screen items-center justify-center">
-                  <div className="text-center">
-                    <p className="mb-2">লোড হচ্ছে...</p>
-                    <p className="text-sm text-muted-foreground">অনুগ্রহ করে অপেক্ষা করুন</p>
-                  </div>
+                  <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
                 </div>
               }
               options={pdfOptions}
@@ -380,8 +378,8 @@ export default function BookReader() {
                   className="mb-2 shadow-lg"
                   devicePixelRatio={2}
                   loading={
-                    <div className="flex items-center justify-center bg-muted" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
-                      <p className="text-sm text-muted-foreground">পৃষ্ঠা {index + 1} লোড হচ্ছে...</p>
+                    <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                      <LoadingIndicator size={100} message={`পৃষ্ঠা ${index + 1}`} />
                     </div>
                   }
                   error={
