@@ -9,6 +9,16 @@ interface BookCardProps {
 export const BookCard = ({ book }: BookCardProps) => {
   const navigate = useNavigate();
 
+  function categoryBadgeClasses(cat: string) {
+    const key = (cat || '').toLowerCase();
+    if (key.includes('সিরিজ') || key.includes('series')) return 'bg-green-100 text-green-900';
+    if (key.includes('সাহিত্য') || key.includes('sahitto') || key.includes('sahitya')) return 'bg-amber-100 text-amber-900';
+    if (key.includes('কুরআন') || key.includes('quran')) return 'bg-sky-100 text-sky-900';
+    if (key.includes('হাদিস') || key.includes('hadith')) return 'bg-amber-50 text-amber-900';
+    if (key.includes('কর্নার') || key.includes('corner')) return 'bg-emerald-50 text-emerald-900';
+    return 'bg-yellow-100 text-yellow-900';
+  }
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }).map((_, i) => (
       <Star
@@ -54,7 +64,7 @@ export const BookCard = ({ book }: BookCardProps) => {
           </div>
 
           {book.categories && book.categories[0] && (
-            <span className="inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium bg-yellow-100 text-yellow-900">
+            <span className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium ${categoryBadgeClasses(book.categories[0])}`}>
               {book.categories[0]}
             </span>
           )}

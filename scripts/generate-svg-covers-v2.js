@@ -58,18 +58,33 @@ function makeSVG(title, author, category) {
   const catNorm = (category || '').replace(/\s+/g, '').toLowerCase();
   const isSeries = catNorm.includes('সিরিজ') || catNorm.includes('series');
   const isIslamicLit = catNorm.includes('ইসলামিকসাহিত্য') || (catNorm.includes('ইসলামিক') && catNorm.includes('সাহিত্য')) || catNorm.includes('islamic');
+  const isQuran = catNorm.includes('কুরআন') || catNorm.includes('quran');
+  const isHadith = catNorm.includes('হাদিস') || catNorm.includes('hadith');
+  const isCorner = catNorm.includes('ইসলামিককর্নার') || catNorm.includes('islamiccorner') || catNorm.includes('islamiccorner');
 
-  const titleFill = isIslamicLit ? '#2b1f12' : '#ffffff';
-  const authorFill = isIslamicLit ? '#6b4f3a' : '#f3e7e7';
+  const titleFill = isIslamicLit || isQuran || isHadith || isCorner ? '#2b1f12' : '#ffffff';
+  const authorFill = isIslamicLit || isQuran || isHadith || isCorner ? '#6b4f3a' : '#f3e7e7';
 
   const bgGrad = isSeries
     ? ` <linearGradient id="g" x1="0" x2="1">\n      <stop offset="0%" stop-color="#061616"/>\n      <stop offset="100%" stop-color="#071b19"/>\n    </linearGradient>`
+    : isQuran
+    ? ` <linearGradient id="g" x1="0" x2="1">\n      <stop offset="0%" stop-color="#f3fbff"/>\n      <stop offset="100%" stop-color="#e6f3fb"/>\n    </linearGradient>`
+    : isHadith
+    ? ` <linearGradient id="g" x1="0" x2="1">\n      <stop offset="0%" stop-color="#fbf8f2"/>\n      <stop offset="100%" stop-color="#f4efe4"/>\n    </linearGradient>`
+    : isCorner
+    ? ` <linearGradient id="g" x1="0" x2="1">\n      <stop offset="0%" stop-color="#f5fbf7"/>\n      <stop offset="100%" stop-color="#eef7ef"/>\n    </linearGradient>`
     : isIslamicLit
     ? ` <linearGradient id="g" x1="0" x2="1">\n      <stop offset="0%" stop-color="#fbf7f0"/>\n      <stop offset="100%" stop-color="#f6e6d0"/>\n    </linearGradient>`
     : ` <linearGradient id="g" x1="0" x2="1">\n      <stop offset="0%" stop-color="#0f172a"/>\n      <stop offset="100%" stop-color="#0b1220"/>\n    </linearGradient>`;
 
   const coverGradDef = isSeries
     ? ` <linearGradient id="coverGrad" x1="0" x2="1">\n      <stop offset="0%" stop-color="#0f6b5f"/>\n      <stop offset="50%" stop-color="#0b8f75"/>\n      <stop offset="100%" stop-color="#04604c"/>\n    </linearGradient>`
+    : isQuran
+    ? ` <linearGradient id="coverGrad" x1="0" x2="1">\n      <stop offset="0%" stop-color="#e6fbf4"/>\n      <stop offset="50%" stop-color="#cfeef0"/>\n      <stop offset="100%" stop-color="#aee7dd"/>\n    </linearGradient>`
+    : isHadith
+    ? ` <linearGradient id="coverGrad" x1="0" x2="1">\n      <stop offset="0%" stop-color="#fff7ec"/>\n      <stop offset="50%" stop-color="#fde6c8"/>\n      <stop offset="100%" stop-color="#f6d9a8"/>\n    </linearGradient>`
+    : isCorner
+    ? ` <linearGradient id="coverGrad" x1="0" x2="1">\n      <stop offset="0%" stop-color="#eefaf0"/>\n      <stop offset="50%" stop-color="#dff4e2"/>\n      <stop offset="100%" stop-color="#c6ebca"/>\n    </linearGradient>`
     : isIslamicLit
     ? ` <linearGradient id="coverGrad" x1="0" x2="1">\n      <stop offset="0%" stop-color="#fff6ec"/>\n      <stop offset="50%" stop-color="#fde8c7"/>\n      <stop offset="100%" stop-color="#f7dfb2"/>\n    </linearGradient>`
     : ` <linearGradient id="coverGrad" x1="0" x2="1">\n      <stop offset="0%" stop-color="#b71c1c"/>\n      <stop offset="50%" stop-color="#d18b54"/>\n      <stop offset="100%" stop-color="#8a2b2b"/>\n    </linearGradient>`;
