@@ -13,7 +13,7 @@ import { Book } from "@/types/book";
 // Thumbnail Script: scripts/README.md
 // =====================================================
 
-export const books: Book[
+export const books: Book[] = [
   {
     id: "23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib",
     title: "নবীদের জীবন কাহিনি-১",
