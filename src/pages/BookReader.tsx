@@ -75,13 +75,7 @@ export default function BookReader() {
     }
   }, [currentPage, book, numPages, bookmarkedPages]);
 
-  useEffect(() => {
-    // Auto-hide controls after 3 seconds
-    if (showControls) {
-      const timer = setTimeout(() => setShowControls(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showControls]);
+  // Controls visibility is now toggled only by tapping the reader area.
 
   useEffect(() => {
     // Set initial container width
@@ -104,11 +98,15 @@ export default function BookReader() {
 
     const handleScroll = () => {
       const pages = container.querySelectorAll('.react-pdf__Page');
+      if (!pages.length) return;
+
+      const viewportMiddle = window.innerHeight / 2;
       let currentVisible = 1;
 
       pages.forEach((page, index) => {
         const rect = page.getBoundingClientRect();
-        if (rect.top >= 0 && rect.top < window.innerHeight / 2) {
+        // Consider the page that intersects the vertical middle of the viewport as current
+        if (rect.top <= viewportMiddle && rect.bottom >= viewportMiddle) {
           currentVisible = index + 1;
         }
       });
@@ -230,12 +228,8 @@ export default function BookReader() {
       className="relative flex h-screen flex-col bg-background"
       onClick={() => setShowControls(!showControls)}
     >
-      {/* Top Bar - Fixed */}
-      <div
-        className={`fixed left-0 right-0 top-0 z-50 bg-card/95 backdrop-blur transition-transform ${
-          showControls ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
+      {/* Top Header - Always Fixed */}
+      <header className="fixed left-0 right-0 top-0 z-50 bg-card/95 backdrop-blur">
         <div className="flex items-center justify-between p-2 md:p-3">
           <Button
             variant="ghost"
@@ -258,9 +252,15 @@ export default function BookReader() {
             <Menu className="h-4 w-4 md:h-5 md:w-5" />
           </Button>
         </div>
+      </header>
 
-        {/* Controls */}
-        <div className="flex items-center justify-around border-t border-border p-1.5 md:p-2">
+      {/* Controls - Toggle Visibility */}
+      <div
+        className={`fixed left-0 right-0 top-[48px] md:top-[56px] z-40 bg-card/95 backdrop-blur border-t border-border transition-transform ${
+          showControls ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        <div className="flex items-center justify-around p-1.5 md:p-2">
           <Button
             variant="ghost"
             size="icon"
