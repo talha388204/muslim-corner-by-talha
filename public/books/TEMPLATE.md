@@ -19,7 +19,7 @@ public/books/book-XXX/
   coverUrl: "/books/book-XXX/cover.png",
   pdfUrl: "/books/book-XXX/book.pdf",
   pages: 200,
-  categories: ["ইসলামিক কর্নার"],
+  categories: ["কুরআন"],  // কুরআন, হাদিস, তাফসির, ইসলামিক কর্নার, ইসলামিক সাহিত্য, জনপ্রিয় বই, ইসলামিক সিরিজ
   ratingAvg: 4.5,
   ratingsCount: 150,
   badge: "NEW",        // বা "BESTSELLER" বা ছাড়াই
@@ -27,10 +27,16 @@ public/books/book-XXX/
 }
 ```
 
+## Thumbnail তৈরি করুন (স্বয়ংক্রিয়):
+
+```bash
+node scripts/generate-thumbnail.js public/books/book-XXX/book.pdf public/books/book-XXX/cover.png
+```
+
 ## চেকলিস্ট:
 - [ ] ফোল্ডার তৈরি করেছি: `public/books/book-XXX/`
 - [ ] PDF ফাইল রেখেছি: `book.pdf`
-- [ ] কভার ইমেজ রেখেছি: `cover.png` বা `cover.jpg`
+- [ ] Thumbnail তৈরি করেছি: `cover.png` (স্ক্রিপ্ট দিয়ে)
 - [ ] `src/data/books.ts` এ বই যোগ করেছি
 - [ ] সঠিক ID দিয়েছি (ইউনিক)
 - [ ] সঠিক পাথ দিয়েছি (coverUrl এবং pdfUrl)
