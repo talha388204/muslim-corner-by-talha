@@ -35,6 +35,8 @@ export default function BookReader() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [bookmarkedPages, setBookmarkedPages] = useState<number[]>([]);
   const [isDownloaded, setIsDownloaded] = useState(false);
+  const [documentLoaded, setDocumentLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     // Load reading progress and bookmarks
@@ -121,6 +123,14 @@ export default function BookReader() {
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
+    setDocumentLoaded(true);
+    setLoadError(null);
+  }
+
+  function onDocumentLoadError(error: Error) {
+    console.error('PDF load error:', error);
+    setLoadError('পিডিএফ লোড করতে সমস্যা হয়েছে');
+    setDocumentLoaded(false);
   }
 
   const handleDownload = async () => {
@@ -324,33 +334,56 @@ export default function BookReader() {
         }}
       >
         <div className="flex flex-col items-center gap-2 p-2 md:p-4">
-          <Document
-            file={book.pdfUrl}
-            onLoadSuccess={onDocumentLoadSuccess}
-            loading={
-              <div className="flex h-screen items-center justify-center">
-                <p>লোড হচ্ছে...</p>
+          {loadError ? (
+            <div className="flex h-screen items-center justify-center">
+              <div className="text-center">
+                <p className="text-destructive mb-4">{loadError}</p>
+                <Button onClick={() => window.location.reload()}>আবার চেষ্টা করুন</Button>
               </div>
-            }
-            options={{
-              cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
-              cMapPacked: true,
-              standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
-            }}
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-                width={pageWidth}
-                scale={scale}
-                renderTextLayer={true}
-                renderAnnotationLayer={true}
-                className="mb-2 shadow-lg"
-                devicePixelRatio={2}
-              />
-            ))}
-          </Document>
+            </div>
+          ) : (
+            <Document
+              file={book.pdfUrl}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              loading={
+                <div className="flex h-screen items-center justify-center">
+                  <div className="text-center">
+                    <p className="mb-2">লোড হচ্ছে...</p>
+                    <p className="text-sm text-muted-foreground">অনুগ্রহ করে অপেক্ষা করুন</p>
+                  </div>
+                </div>
+              }
+              options={{
+                cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+                cMapPacked: true,
+                standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
+              }}
+            >
+              {documentLoaded && numPages > 0 && Array.from(new Array(numPages), (el, index) => (
+                <Page
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                  width={pageWidth}
+                  scale={scale}
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                  className="mb-2 shadow-lg"
+                  devicePixelRatio={2}
+                  loading={
+                    <div className="flex items-center justify-center bg-muted" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                      <p className="text-sm text-muted-foreground">পৃষ্ঠা {index + 1} লোড হচ্ছে...</p>
+                    </div>
+                  }
+                  error={
+                    <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                      <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
+                    </div>
+                  }
+                />
+              ))}
+            </Document>
+          )}
         </div>
       </div>
 
