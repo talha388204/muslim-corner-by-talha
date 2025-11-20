@@ -1,13 +1,22 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { books } from "@/data/books";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Star, Download, Share2, BookOpen } from "lucide-react";
+import { ChevronLeft, Star, Share2, BookOpen, Heart, HeartOff } from "lucide-react";
 import { toast } from "sonner";
+import { addToLibrary, removeFromLibrary, isInLibrary, markAsDownloaded } from "@/lib/offlineStorage";
+import { useState, useEffect } from "react";
 
 export default function BookDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const book = books.find((b) => b.id === id);
+  const [inLibrary, setInLibrary] = useState(false);
+
+  useEffect(() => {
+    if (book) {
+      setInLibrary(isInLibrary(book.id));
+    }
+  }, [book]);
 
   if (!book) {
     return (
@@ -49,6 +58,46 @@ export default function BookDetail() {
       }
     } else {
       toast.info("শেয়ার ফিচার সাপোর্ট করে না");
+    }
+  };
+
+  const handleLibraryToggle = () => {
+    if (!book) return;
+    
+    if (inLibrary) {
+      removeFromLibrary(book.id);
+      setInLibrary(false);
+      toast.success("লাইব্রেরি থেকে সরানো হয়েছে");
+    } else {
+      addToLibrary(book);
+      setInLibrary(true);
+      toast.success("লাইব্রেরিতে যুক্ত হয়েছে");
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!book) return;
+    
+    try {
+      // Add to library first
+      if (!inLibrary) {
+        addToLibrary(book);
+        setInLibrary(true);
+      }
+      
+      // Mark as downloaded for offline access
+      markAsDownloaded(book.id);
+      
+      // Cache the PDF using service worker
+      if ('caches' in window) {
+        const cache = await caches.open('muslim-corner-pdfs');
+        await cache.add(book.pdfUrl);
+      }
+      
+      toast.success("অফলাইনে পড়ার জন্য সংরক্ষিত হয়েছে");
+    } catch (error) {
+      console.error("Download failed:", error);
+      toast.error("ডাউনলোড ব্যর্থ হয়েছে");
     }
   };
 
@@ -135,19 +184,25 @@ export default function BookDetail() {
               </Button>
 
               <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={handleLibraryToggle}
+                >
+                  {inLibrary ? (
+                    <>
+                      <Heart className="mr-2 fill-current" size={18} />
+                      লাইব্রেরিতে আছে
+                    </>
+                  ) : (
+                    <>
+                      <HeartOff className="mr-2" size={18} />
+                      লাইব্রেরিতে যুক্ত করুন
+                    </>
+                  )}
+                </Button>
                 <Button variant="outline" onClick={handleShare}>
                   <Share2 className="mr-2" size={18} />
                   শেয়ার
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    window.open(book.pdfUrl, "_blank");
-                    toast.success("ডাউনলোড শুরু হয়েছে");
-                  }}
-                >
-                  <Download className="mr-2" size={18} />
-                  ডাউনলোড
                 </Button>
               </div>
             </div>
