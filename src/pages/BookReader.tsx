@@ -355,6 +355,7 @@ export default function BookReader() {
               </div>
             </div>
           ) : (
+<<<<<<< Updated upstream
             <Document
               key={book.id}
               file={book.pdfUrl}
@@ -380,16 +381,57 @@ export default function BookReader() {
                   loading={
                     <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
                       <LoadingIndicator size={100} message={`পৃষ্ঠা ${index + 1}`} />
+=======
+            // If the book has no valid pdfUrl, show a helpful message instead of attempting to load
+            (!book.pdfUrl || book.pdfUrl === 'undefined') ? (
+              <div className="flex h-screen items-center justify-center">
+                <div className="text-center">
+                  <p className="text-destructive mb-4">এই বইটির পিডিএফ উপলব্ধ নয়।</p>
+                  <p className="text-sm text-muted-foreground mb-4">আপনি চাইলে বইটি পুনরায় ইম্পোর্ট করুন বা ডেভ টুল দিয়ে `public/books/{book.id}` ফোল্ডার চেক করুন।</p>
+                  <Button onClick={() => navigate(-1)}>ফিরে যান</Button>
+                </div>
+              </div>
+            ) : (
+              <Document
+                key={book.id}
+                file={book.pdfUrl}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={
+                  <div className="flex h-screen items-center justify-center">
+                    <div className="text-center">
+                      <p className="mb-2">লোড হচ্ছে...</p>
+                      <p className="text-sm text-muted-foreground">অনুগ্রহ করে অপেক্ষা করুন</p>
+>>>>>>> Stashed changes
                     </div>
-                  }
-                  error={
-                    <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
-                      <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
-                    </div>
-                  }
-                />
-              ))}
-            </Document>
+                  </div>
+                }
+                options={pdfOptions}
+              >
+                {documentLoaded && numPages > 0 && Array.from(new Array(numPages), (el, index) => (
+                  <Page
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                    width={pageWidth}
+                    scale={scale}
+                    renderTextLayer={true}
+                    renderAnnotationLayer={true}
+                    className="mb-2 shadow-lg"
+                    devicePixelRatio={2}
+                    loading={
+                      <div className="flex items-center justify-center bg-muted" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                        <p className="text-sm text-muted-foreground">পৃষ্ঠা {index + 1} লোড হচ্ছে...</p>
+                      </div>
+                    }
+                    error={
+                      <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                        <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
+                      </div>
+                    }
+                  />
+                ))}
+              </Document>
+            )
           )}
         </div>
       </div>
