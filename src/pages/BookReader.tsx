@@ -14,6 +14,8 @@ import {
 import { books } from "@/data/books";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { SearchDialog } from "@/components/reader/SearchDialog";
+import { addToLibrary, isInLibrary, saveProgress, getProgress, toggleBookmark as toggleBookmarkStorage } from "@/lib/offlineStorage";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -26,9 +28,38 @@ export default function BookReader() {
   const book = books.find((b) => b.id === id);
 
   const [numPages, setNumPages] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.2);
   const [showControls, setShowControls] = useState(true);
   const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [bookmarkedPages, setBookmarkedPages] = useState<number[]>([]);
+  const [isDownloaded, setIsDownloaded] = useState(false);
+
+  useEffect(() => {
+    // Load reading progress and bookmarks
+    if (book) {
+      const progress = getProgress(book.id);
+      if (progress) {
+        setCurrentPage(progress.currentPage);
+        setBookmarkedPages(progress.bookmarks || []);
+      }
+      setIsDownloaded(isInLibrary(book.id));
+    }
+  }, [book]);
+
+  useEffect(() => {
+    // Save reading progress
+    if (book && numPages > 0) {
+      saveProgress({
+        bookId: book.id,
+        currentPage,
+        totalPages: numPages,
+        lastReadAt: new Date(),
+        bookmarks: bookmarkedPages,
+      });
+    }
+  }, [currentPage, book, numPages, bookmarkedPages]);
 
   useEffect(() => {
     // Auto-hide controls after 3 seconds
@@ -52,6 +83,29 @@ export default function BookReader() {
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
+  // Track current page based on scroll position
+  useEffect(() => {
+    const container = document.getElementById('pdf-container');
+    if (!container || numPages === 0) return;
+
+    const handleScroll = () => {
+      const pages = container.querySelectorAll('.react-pdf__Page');
+      let currentVisible = 1;
+
+      pages.forEach((page, index) => {
+        const rect = page.getBoundingClientRect();
+        if (rect.top >= 0 && rect.top < window.innerHeight / 2) {
+          currentVisible = index + 1;
+        }
+      });
+
+      setCurrentPage(currentVisible);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [numPages]);
+
   if (!book) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
@@ -69,9 +123,28 @@ export default function BookReader() {
     setNumPages(numPages);
   }
 
-  const handleDownload = () => {
-    window.open(book.pdfUrl, "_blank");
-    toast.success("ডাউনলোড শুরু হয়েছে");
+  const handleDownload = async () => {
+    if (!book) return;
+
+    if (isDownloaded) {
+      toast.info("বইটি ইতিমধ্যে ডাউনলোড করা আছে");
+      return;
+    }
+
+    try {
+      // Cache the PDF for offline reading
+      const cache = await caches.open('muslim-corner-pdfs');
+      await cache.add(book.pdfUrl);
+      
+      // Add to library
+      addToLibrary(book);
+      setIsDownloaded(true);
+      
+      toast.success("বইটি ডাউনলোড এবং লাইব্রেরিতে যোগ করা হয়েছে");
+    } catch (error) {
+      console.error('Download failed:', error);
+      toast.error("ডাউনলোড ব্যর্থ হয়েছে");
+    }
   };
 
   const handleShare = async () => {
@@ -86,12 +159,45 @@ export default function BookReader() {
         console.error("Share failed:", err);
       }
     } else {
-      toast.info("শেয়ার ফিচার সাপোর্ট করে না");
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      toast.info("লিংক কপি করা হয়েছে");
     }
   };
 
   const handleBookmark = () => {
-    toast.success(`বুকমার্ক করা হয়েছে`);
+    if (!book) return;
+    toggleBookmarkStorage(book.id, currentPage);
+    
+    setBookmarkedPages(prev => {
+      if (prev.includes(currentPage)) {
+        toast.success("বুকমার্ক সরানো হয়েছে");
+        return prev.filter(p => p !== currentPage);
+      } else {
+        toast.success("বুকমার্ক যোগ করা হয়েছে");
+        return [...prev, currentPage];
+      }
+    });
+  };
+
+  const handleZoomIn = () => {
+    setScale(prev => Math.min(3.0, prev + 0.2));
+    toast.success("জুম করা হয়েছে");
+  };
+
+  const handleZoomOut = () => {
+    setScale(prev => Math.max(0.5, prev - 0.2));
+    toast.success("জুম আউট করা হয়েছে");
+  };
+
+  const jumpToPage = (pageNum: number) => {
+    if (pageNum < 1 || pageNum > numPages) return;
+    
+    const container = document.getElementById('pdf-container');
+    const pages = container?.querySelectorAll('.react-pdf__Page');
+    if (pages && pages[pageNum - 1]) {
+      pages[pageNum - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   // Calculate optimal width for PDF pages
@@ -141,8 +247,9 @@ export default function BookReader() {
               e.stopPropagation();
               handleDownload();
             }}
+            title="ডাউনলোড করুন"
           >
-            <Download className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <Download className={`h-3.5 w-3.5 md:h-4 md:w-4 ${isDownloaded ? 'text-primary' : ''}`} />
           </Button>
           <Button
             variant="ghost"
@@ -152,6 +259,7 @@ export default function BookReader() {
               e.stopPropagation();
               handleShare();
             }}
+            title="শেয়ার করুন"
           >
             <Share2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
           </Button>
@@ -163,10 +271,20 @@ export default function BookReader() {
               e.stopPropagation();
               handleBookmark();
             }}
+            title="বুকমার্ক করুন"
           >
-            <Bookmark className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <Bookmark className={`h-3.5 w-3.5 md:h-4 md:w-4 ${bookmarkedPages.includes(currentPage) ? 'fill-primary text-primary' : ''}`} />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSearchOpen(true);
+            }}
+            title="পৃষ্ঠা খুঁজুন"
+          >
             <SearchIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
           </Button>
           <Button
@@ -175,8 +293,9 @@ export default function BookReader() {
             className="h-8 w-8"
             onClick={(e) => {
               e.stopPropagation();
-              setScale(Math.max(0.5, scale - 0.2));
+              handleZoomOut();
             }}
+            title="জুম আউট"
           >
             <ZoomOut className="h-3.5 w-3.5 md:h-4 md:w-4" />
           </Button>
@@ -186,8 +305,9 @@ export default function BookReader() {
             className="h-8 w-8"
             onClick={(e) => {
               e.stopPropagation();
-              setScale(Math.min(3.0, scale + 0.2));
+              handleZoomIn();
             }}
+            title="জুম ইন"
           >
             <ZoomIn className="h-3.5 w-3.5 md:h-4 md:w-4" />
           </Button>
@@ -212,6 +332,11 @@ export default function BookReader() {
                 <p>লোড হচ্ছে...</p>
               </div>
             }
+            options={{
+              cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+              cMapPacked: true,
+              standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
+            }}
           >
             {Array.from(new Array(numPages), (el, index) => (
               <Page
@@ -222,6 +347,7 @@ export default function BookReader() {
                 renderTextLayer={true}
                 renderAnnotationLayer={true}
                 className="mb-2 shadow-lg"
+                devicePixelRatio={2}
               />
             ))}
           </Document>
@@ -234,12 +360,26 @@ export default function BookReader() {
           showControls ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <div className="flex items-center justify-center p-2">
+        <div className="flex items-center justify-center gap-4 p-2">
           <p className="text-xs font-medium md:text-sm">
-            মোট পৃষ্ঠা: {numPages}
+            পৃষ্ঠা: {currentPage} / {numPages}
           </p>
+          {bookmarkedPages.length > 0 && (
+            <p className="text-xs text-muted-foreground">
+              বুকমার্ক: {bookmarkedPages.length}
+            </p>
+          )}
         </div>
       </div>
+
+      {/* Search Dialog */}
+      <SearchDialog
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        totalPages={numPages}
+        onPageSelect={jumpToPage}
+        bookmarks={bookmarkedPages}
+      />
     </div>
   );
 }
