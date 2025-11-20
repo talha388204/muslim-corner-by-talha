@@ -42,13 +42,6 @@ export const BookCard = ({ book }: BookCardProps) => {
             {book.badge}
           </div>
         )}
-
-        {/* Price Tag */}
-        {book.price && (
-          <div className="absolute bottom-2 right-2 rounded bg-primary px-2 py-1 text-xs font-bold text-primary-foreground">
-            {book.price}
-          </div>
-        )}
       </div>
 
       {/* Book Info */}
