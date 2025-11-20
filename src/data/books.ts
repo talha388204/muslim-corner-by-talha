@@ -1310,7 +1310,7 @@ export const books: Book[] = [
     author: "",
     description: "Imported",
     coverUrl: "/books/mishkat-shorif-4/cover.svg",
-    pdfUrl: "undefined",
+    pdfUrl: "/books/mishkat-shorif-4/mishkat-shorif-4.pdf",
     pages: 0,
     categories: ["হাদিস"],
     ratingAvg: 4,
