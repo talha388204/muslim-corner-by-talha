@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        bengali: ['"Noto Sans Bengali"', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +60,10 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        'rating-star': "hsl(var(--rating-star))",
+        'badge-bg': "hsl(var(--badge-bg))",
+        'badge-text': "hsl(var(--badge-text))",
+        'nav-active': "hsl(var(--nav-active))",
       },
       borderRadius: {
         lg: "var(--radius)",
