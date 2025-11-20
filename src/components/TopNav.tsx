@@ -9,10 +9,10 @@ export const TopNav = () => {
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <div 
-          className="cursor-pointer text-2xl font-bold text-primary"
+          className="cursor-pointer text-xl font-bold text-primary"
           onClick={() => navigate("/")}
         >
-          মেঘই
+          Muslim Corner
         </div>
 
         {/* Actions */}

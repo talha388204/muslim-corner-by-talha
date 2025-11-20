@@ -17,7 +17,6 @@ export const books: Book[] = [
     categories: ["জনপ্রিয় বই"],
     ratingAvg: 4.7,
     ratingsCount: 230,
-    price: "৬৫৳",
     badge: "NEW"
   },
   {
@@ -29,8 +28,7 @@ export const books: Book[] = [
     pages: 245,
     categories: ["সাহিত্য"],
     ratingAvg: 4.8,
-    ratingsCount: 280,
-    price: "৭৭৳"
+    ratingsCount: 280
   },
   {
     id: "book-003",
@@ -41,8 +39,7 @@ export const books: Book[] = [
     pages: 190,
     categories: ["সাহিত্য"],
     ratingAvg: 4.6,
-    ratingsCount: 156,
-    price: "৪০৳"
+    ratingsCount: 156
   },
   {
     id: "book-004",
@@ -53,8 +50,7 @@ export const books: Book[] = [
     pages: 312,
     categories: ["সাহিত্য"],
     ratingAvg: 4.5,
-    ratingsCount: 132,
-    price: "৪৫৳"
+    ratingsCount: 132
   },
   {
     id: "book-005",
@@ -65,8 +61,7 @@ export const books: Book[] = [
     pages: 278,
     categories: ["জনপ্রিয় বই"],
     ratingAvg: 4.9,
-    ratingsCount: 504,
-    price: "৬০৳"
+    ratingsCount: 504
   },
   {
     id: "book-006",
@@ -79,7 +74,6 @@ export const books: Book[] = [
     categories: ["ইসলামিক কর্নার"],
     ratingAvg: 5.0,
     ratingsCount: 892,
-    price: "৫৫৳",
     badge: "BESTSELLER",
     featured: true
   },
