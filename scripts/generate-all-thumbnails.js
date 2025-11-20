@@ -8,10 +8,13 @@
 
 import fs from 'fs';
 import path from 'path';
+<<<<<<< Updated upstream
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+=======
+>>>>>>> Stashed changes
 
 // Category-based design themes with unique patterns
 const categoryThemes = {
