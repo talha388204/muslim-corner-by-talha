@@ -44,6 +44,16 @@ export const BookCard = ({ book }: BookCardProps) => {
           src={book.coverUrl}
           alt={book.title}
           className="h-full w-full object-cover"
+          loading="lazy"
+          onError={(e) => {
+            // Fallback: if SVG fails, try PNG, and vice versa
+            const currentSrc = e.currentTarget.src;
+            if (currentSrc.endsWith('.svg')) {
+              e.currentTarget.src = currentSrc.replace('.svg', '.png');
+            } else if (currentSrc.endsWith('.png')) {
+              e.currentTarget.src = currentSrc.replace('.png', '.svg');
+            }
+          }}
         />
         
         {/* Badge */}
