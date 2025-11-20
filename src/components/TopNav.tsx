@@ -1,4 +1,4 @@
-import { Search, QrCode, ShoppingCart } from "lucide-react";
+import { Search, QrCode, Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const TopNav = () => {
@@ -26,11 +26,11 @@ export const TopNav = () => {
           <button className="text-foreground hover:text-primary">
             <QrCode size={22} />
           </button>
-          <button className="relative text-foreground hover:text-primary">
-            <ShoppingCart size={22} />
-            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-              0
-            </span>
+          <button 
+            onClick={() => navigate("/bookmarks")}
+            className="text-foreground hover:text-primary"
+          >
+            <Bookmark size={22} />
           </button>
         </div>
       </div>

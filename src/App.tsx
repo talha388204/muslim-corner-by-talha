@@ -10,6 +10,7 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 const Home = lazy(() => import("./pages/Home"));
 const BookDetail = lazy(() => import("./pages/BookDetail"));
 const BookReader = lazy(() => import("./pages/BookReader"));
+const Bookmarks = lazy(() => import("./pages/Bookmarks"));
 const Charts = lazy(() => import("./pages/Charts"));
 const Library = lazy(() => import("./pages/Library"));
 const SearchPage = lazy(() => import("./pages/SearchPage"));
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/book/:id" element={<BookDetail />} />
             <Route path="/reader/:id" element={<BookReader />} />
+            <Route path="/bookmarks" element={<Bookmarks />} />
             <Route path="/charts" element={<Charts />} />
             <Route path="/library" element={<Library />} />
             <Route path="/search" element={<SearchPage />} />
