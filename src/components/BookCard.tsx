@@ -46,12 +46,18 @@ export const BookCard = ({ book }: BookCardProps) => {
 
       {/* Book Info */}
       <div className="mt-2 space-y-1">
-        {/* Rating */}
-        <div className="flex items-center gap-1">
-          {renderStars(book.ratingAvg)}
-          <span className="ml-1 text-xs text-muted-foreground">
-            ({book.ratingsCount})
-          </span>
+        {/* Rating + Category label */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            {renderStars(book.ratingAvg)}
+            <span className="ml-1 text-xs text-muted-foreground">({book.ratingsCount})</span>
+          </div>
+
+          {book.categories && book.categories[0] && (
+            <span className="inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium bg-yellow-100 text-yellow-900">
+              {book.categories[0]}
+            </span>
+          )}
         </div>
 
         {/* Title */}
