@@ -354,20 +354,20 @@ export default function BookReader() {
                 <Button onClick={() => window.location.reload()}>আবার চেষ্টা করুন</Button>
               </div>
             </div>
+          ) : !documentLoaded ? (
+            <div className="flex h-screen items-center justify-center">
+              <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
+            </div>
           ) : (
             <Document
               key={book.id}
               file={book.pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={onDocumentLoadError}
-              loading={
-                <div className="flex h-screen items-center justify-center">
-                  <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
-                </div>
-              }
+              loading={null}
               options={pdfOptions}
             >
-              {documentLoaded && numPages > 0 && Array.from(new Array(numPages), (el, index) => (
+              {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page
                   key={`page_${index + 1}`}
                   pageNumber={index + 1}
@@ -378,8 +378,8 @@ export default function BookReader() {
                   className="mb-2 shadow-lg"
                   devicePixelRatio={2}
                   loading={
-                    <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
-                      <LoadingIndicator size={100} message={`পৃষ্ঠা ${index + 1}`} />
+                    <div className="flex items-center justify-center bg-muted/20" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                      <p className="text-xs text-muted-foreground">পৃষ্ঠা {index + 1} লোড হচ্ছে...</p>
                     </div>
                   }
                   error={
