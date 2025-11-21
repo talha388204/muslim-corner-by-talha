@@ -27,7 +27,7 @@ const App = () => (
       <BrowserRouter>
         <Suspense fallback={
           <div className="min-h-screen bg-background flex items-center justify-center">
-            <LoadingIndicator message="অ্যাপ লোড হচ্ছে..." />
+            <LoadingIndicator size={150} message="লোড হচ্ছে..." />
           </div>
         }>
           <Routes>

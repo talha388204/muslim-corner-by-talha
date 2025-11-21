@@ -7,7 +7,7 @@ interface LoadingIndicatorProps {
 }
 
 export const LoadingIndicator = ({ 
-  size = 200, 
+  size = 150, 
   message = "লোড হচ্ছে..." 
 }: LoadingIndicatorProps) => {
   return (
@@ -17,6 +17,9 @@ export const LoadingIndicator = ({
           animationData={loadingAnimation} 
           loop={true}
           autoplay={true}
+          rendererSettings={{
+            preserveAspectRatio: 'xMidYMid slice'
+          }}
         />
       </div>
       {message && (
