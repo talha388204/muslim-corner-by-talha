@@ -1,6 +1,7 @@
 import { Book } from "@/types/book";
 import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface BookCardProps {
   book: Book;
@@ -8,6 +9,7 @@ interface BookCardProps {
 
 export const BookCard = ({ book }: BookCardProps) => {
   const navigate = useNavigate();
+  const [imgError, setImgError] = useState(false);
 
   function categoryBadgeClasses(cat: string) {
     const key = (cat || '').toLowerCase();
@@ -40,21 +42,34 @@ export const BookCard = ({ book }: BookCardProps) => {
     >
       {/* Book Cover Container */}
       <div className="relative aspect-[2/3] overflow-hidden rounded-lg bg-card">
-        <img
-          src={book.coverUrl}
-          alt={book.title}
-          className="h-full w-full object-cover"
-          loading="lazy"
-          onError={(e) => {
-            // Fallback: if SVG fails, try PNG, and vice versa
-            const currentSrc = e.currentTarget.src;
-            if (currentSrc.endsWith('.svg')) {
-              e.currentTarget.src = currentSrc.replace('.svg', '.png');
-            } else if (currentSrc.endsWith('.png')) {
-              e.currentTarget.src = currentSrc.replace('.png', '.svg');
-            }
-          }}
-        />
+        {imgError ? (
+          <div className="flex h-full w-full items-center justify-center bg-muted">
+            <div className="text-center p-4">
+              <svg className="w-16 h-16 mx-auto mb-2 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <p className="text-xs text-muted-foreground line-clamp-2">{book.title}</p>
+            </div>
+          </div>
+        ) : (
+          <img
+            src={book.coverUrl}
+            alt={book.title}
+            className="h-full w-full object-cover"
+            loading="lazy"
+            onError={(e) => {
+              const currentSrc = e.currentTarget.src;
+              // Try PNG if SVG fails
+              if (currentSrc.endsWith('.svg')) {
+                e.currentTarget.src = currentSrc.replace('.svg', '.png');
+              } 
+              // If PNG also fails, show placeholder
+              else {
+                setImgError(true);
+              }
+            }}
+          />
+        )}
         
         {/* Badge */}
         {book.badge && (
