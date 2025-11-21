@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Document, Page, pdfjs } from "react-pdf";
+import { Document, Page } from "react-pdf/dist/esm/entry.vite";
 import {
   ChevronLeft,
   Download,
@@ -20,9 +20,6 @@ import { addToLibrary, isInLibrary, saveProgress, getProgress, toggleBookmark as
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-// Set up PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-
 export default function BookReader() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -37,13 +34,6 @@ export default function BookReader() {
   const [bookmarkedPages, setBookmarkedPages] = useState<number[]>([]);
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-
-  // Memoize PDF options to prevent re-initialization
-  const pdfOptions = useMemo(() => ({
-    cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
-    cMapPacked: true,
-    standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
-  }), []);
 
   useEffect(() => {
     // Reset state when book changes
@@ -368,10 +358,9 @@ export default function BookReader() {
               onLoadError={onDocumentLoadError}
               loading={
                 <div className="flex h-screen items-center justify-center">
-                  <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
+                  <LoadingIndicator message="" />
                 </div>
               }
-              options={pdfOptions}
             >
               {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page
