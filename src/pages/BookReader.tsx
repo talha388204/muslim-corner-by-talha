@@ -355,33 +355,6 @@ export default function BookReader() {
               </div>
             </div>
           ) : (
-<<<<<<< Updated upstream
-            <Document
-              key={book.id}
-              file={book.pdfUrl}
-              onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={onDocumentLoadError}
-              loading={
-                <div className="flex h-screen items-center justify-center">
-                  <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
-                </div>
-              }
-              options={pdfOptions}
-            >
-              {documentLoaded && numPages > 0 && Array.from(new Array(numPages), (el, index) => (
-                <Page
-                  key={`page_${index + 1}`}
-                  pageNumber={index + 1}
-                  width={pageWidth}
-                  scale={scale}
-                  renderTextLayer={true}
-                  renderAnnotationLayer={true}
-                  className="mb-2 shadow-lg"
-                  devicePixelRatio={2}
-                  loading={
-                    <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
-                      <LoadingIndicator size={100} message={`পৃষ্ঠা ${index + 1}`} />
-=======
             // If the book has no valid pdfUrl, show a helpful message instead of attempting to load
             (!book.pdfUrl || book.pdfUrl === 'undefined') ? (
               <div className="flex h-screen items-center justify-center">
@@ -402,7 +375,6 @@ export default function BookReader() {
                     <div className="text-center">
                       <p className="mb-2">লোড হচ্ছে...</p>
                       <p className="text-sm text-muted-foreground">অনুগ্রহ করে অপেক্ষা করুন</p>
->>>>>>> Stashed changes
                     </div>
                   </div>
                 }
