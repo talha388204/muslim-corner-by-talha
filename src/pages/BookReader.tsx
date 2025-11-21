@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Document, Page } from "react-pdf/dist/esm/entry.vite";
+import { Document, Page, pdfjs } from "react-pdf";
 import {
   ChevronLeft,
   Download,
@@ -19,6 +19,9 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { addToLibrary, isInLibrary, saveProgress, getProgress, toggleBookmark as toggleBookmarkStorage } from "@/lib/offlineStorage";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+
+// Configure PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export default function BookReader() {
   const { id } = useParams();
@@ -356,11 +359,7 @@ export default function BookReader() {
               file={book.pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={onDocumentLoadError}
-              loading={
-                <div className="flex h-screen items-center justify-center">
-                  <LoadingIndicator message="" />
-                </div>
-              }
+              loading={<div className="py-20"><LoadingIndicator message="" /></div>}
             >
               {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page
@@ -373,8 +372,8 @@ export default function BookReader() {
                   className="mb-2 shadow-lg"
                   devicePixelRatio={window.devicePixelRatio || 1}
                   loading={
-                    <div className="flex items-center justify-center bg-muted" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
-                      <p className="text-sm text-muted-foreground">পৃষ্ঠা {index + 1}...</p>
+                    <div className="flex items-center justify-center bg-muted/30" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                      <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                     </div>
                   }
                   error={
