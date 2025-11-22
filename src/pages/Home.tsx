@@ -105,7 +105,7 @@ export default function Home() {
                   <Button 
                     size="sm" 
                     className="w-full mt-3"
-                    onClick={() => navigate(`/reader/${lastReadBook.book.id}`)}
+                    onClick={() => navigate(`/reader/${lastReadBook.book.id}?page=${lastReadBook.currentPage}`)}
                   >
                     পড়া চালিয়ে যান
                   </Button>
