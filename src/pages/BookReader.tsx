@@ -221,13 +221,17 @@ export default function BookReader() {
   };
 
   const handleZoomIn = () => {
-    setScale(prev => Math.min(3.0, prev + 0.2));
-    toast.success("জুম করা হয়েছে");
+    setScale(prev => {
+      const newScale = Math.min(3.0, prev + 0.2);
+      return Number(newScale.toFixed(1)); // Round to prevent floating point issues
+    });
   };
 
   const handleZoomOut = () => {
-    setScale(prev => Math.max(0.5, prev - 0.2));
-    toast.success("জুম আউট করা হয়েছে");
+    setScale(prev => {
+      const newScale = Math.max(0.5, prev - 0.2);
+      return Number(newScale.toFixed(1)); // Round to prevent floating point issues
+    });
   };
 
   const jumpToPage = (pageNum: number) => {
@@ -390,21 +394,21 @@ export default function BookReader() {
             >
               {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page
-                  key={`page_${index + 1}`}
+                  key={`page_${index + 1}_${scale}`}
                   pageNumber={index + 1}
                   width={pageWidth}
                   scale={scale}
-                  renderTextLayer={true}
+                  renderTextLayer={false}
                   renderAnnotationLayer={false}
                   className="mb-2 shadow-lg"
-                  devicePixelRatio={window.devicePixelRatio || 1}
+                  devicePixelRatio={2}
                   loading={
-                    <div className="flex items-center justify-center bg-muted/30" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                    <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
                       <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                     </div>
                   }
                   error={
-                    <div className="flex items-center justify-center bg-muted/50" style={{ width: pageWidth, height: pageWidth * 1.4 }}>
+                    <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
                       <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
                     </div>
                   }
