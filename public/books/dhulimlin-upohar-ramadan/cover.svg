@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900">
   <defs>
-    <linearGradient id="bgg00lbl" x1="0" x2="1" y1="0" y2="1">
+    <linearGradient id="bgrtinp4" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#2d1b3d"/>
       <stop offset="50%" stop-color="#4a2e5c"/>
       <stop offset="100%" stop-color="#2d1b3d"/>
     </linearGradient>
-    <linearGradient id="coverg00lbl" x1="0" x2="1" y1="0" y2="1">
+    <linearGradient id="coverrtinp4" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#6b4a8c"/>
       <stop offset="50%" stop-color="#8b5fb3"/>
       <stop offset="100%" stop-color="#6b4a8c"/>
     </linearGradient>
-    <filter id="shadowg00lbl" x="-20%" y="-20%" width="140%" height="140%">
+    <filter id="shadowrtinp4" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#000" flood-opacity="0.7"/>
     </filter>
     
-      <pattern id="patterng00lbl" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <pattern id="patternrtinp4" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
         <!-- Star and Crescent -->
         <path d="M50 25 L54 38 L68 38 L57 46 L61 59 L50 51 L39 59 L43 46 L32 38 L46 38 Z" fill="#d8b4fe" opacity="0.08"/>
         <path d="M30 70 Q25 65 25 60 Q25 50 35 50 Q30 55 30 60 Q30 65 35 70 Z" fill="#d8b4fe" opacity="0.1"/>
         <circle cx="38" cy="60" r="2" fill="#d8b4fe" opacity="0.12"/>
       </pattern>
-    <linearGradient id="shineg00lbl" x1="0" x2="1" y1="0" y2="0">
+    <linearGradient id="shinertinp4" x1="0" x2="1" y1="0" y2="0">
       <stop offset="0%" stop-color="#fff" stop-opacity="0.2"/>
       <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
   </defs>
   
-  <rect width="100%" height="100%" fill="url(#bgg00lbl)"/>
-  <rect width="100%" height="100%" fill="url(#patterng00lbl)"/>
+  <rect width="100%" height="100%" fill="url(#bgrtinp4)"/>
+  <rect width="100%" height="100%" fill="url(#patternrtinp4)"/>
 
   <!-- 3D Book Container -->
   <g transform="translate(50,60)">
@@ -37,7 +37,7 @@
     <rect x="20" y="20" width="500" height="800" rx="16" fill="#2d1b3d"/>
     
     <!-- Main Cover -->
-    <rect x="0" y="0" width="500" height="800" rx="16" fill="url(#coverg00lbl)" filter="url(#shadowg00lbl)"/>
+    <rect x="0" y="0" width="500" height="800" rx="16" fill="url(#coverrtinp4)" filter="url(#shadowrtinp4)"/>
     
     <!-- Ornamental Borders -->
     <rect x="20" y="20" width="460" height="760" rx="12" fill="none" stroke="#c084fc" stroke-width="4" opacity="0.9"/>
@@ -67,7 +67,8 @@
       <tspan x="250" dy="0" font-size="40">ধূলিমলিন উপহার</tspan>
       <tspan x="250" dy="56" font-size="36">- রমাদান</tspan>
       
-    </text>
+      
+</text>
     
     <!-- Ornamental Divider Bottom -->
     <path d="M100 580 Q150 565 200 580 T300 580 T400 580" fill="none" stroke="#c084fc" stroke-width="2.5" opacity="0.7"/>
@@ -79,7 +80,7 @@
     <rect x="150" y="765" width="200" height="3" fill="#c084fc" opacity="0.3" rx="1.5"/>
     
     <!-- Shine Effect for 3D look -->
-    <rect x="0" y="0" width="180" height="800" rx="16" fill="url(#shineg00lbl)"/>
+    <rect x="0" y="0" width="180" height="800" rx="16" fill="url(#shinertinp4)"/>
     
     <!-- Corner Decorations -->
     <circle cx="60" cy="60" r="8" fill="none" stroke="#c084fc" stroke-width="1.5" opacity="0.4"/>

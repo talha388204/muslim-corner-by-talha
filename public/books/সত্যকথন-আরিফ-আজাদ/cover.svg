@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900">
   <defs>
-    <linearGradient id="bggfm9ol" x1="0" x2="1" y1="0" y2="1">
+    <linearGradient id="bgywbr1p" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#3d1b1b"/>
       <stop offset="50%" stop-color="#5c2e2e"/>
       <stop offset="100%" stop-color="#3d1b1b"/>
     </linearGradient>
-    <linearGradient id="covergfm9ol" x1="0" x2="1" y1="0" y2="1">
+    <linearGradient id="coverywbr1p" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#8c4a4a"/>
       <stop offset="50%" stop-color="#b35f5f"/>
       <stop offset="100%" stop-color="#8c4a4a"/>
     </linearGradient>
-    <filter id="shadowgfm9ol" x="-20%" y="-20%" width="140%" height="140%">
+    <filter id="shadowywbr1p" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#000" flood-opacity="0.7"/>
     </filter>
     
-      <pattern id="patterngfm9ol" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <pattern id="patternywbr1p" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
         <!-- Islamic Arabesque Floral -->
         <circle cx="50" cy="50" r="15" fill="none" stroke="#fda4af" stroke-width="1.5" opacity="0.08"/>
         <path d="M50 35 Q55 40 50 45 Q45 40 50 35" fill="#fda4af" opacity="0.1"/>
@@ -24,14 +24,14 @@
         <path d="M35 50 Q40 45 45 50 Q40 55 35 50" fill="#fda4af" opacity="0.1"/>
         <circle cx="50" cy="50" r="5" fill="#fda4af" opacity="0.12"/>
       </pattern>
-    <linearGradient id="shinegfm9ol" x1="0" x2="1" y1="0" y2="0">
+    <linearGradient id="shineywbr1p" x1="0" x2="1" y1="0" y2="0">
       <stop offset="0%" stop-color="#fff" stop-opacity="0.2"/>
       <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
   </defs>
   
-  <rect width="100%" height="100%" fill="url(#bggfm9ol)"/>
-  <rect width="100%" height="100%" fill="url(#patterngfm9ol)"/>
+  <rect width="100%" height="100%" fill="url(#bgywbr1p)"/>
+  <rect width="100%" height="100%" fill="url(#patternywbr1p)"/>
 
   <!-- 3D Book Container -->
   <g transform="translate(50,60)">
@@ -40,7 +40,7 @@
     <rect x="20" y="20" width="500" height="800" rx="16" fill="#3d1b1b"/>
     
     <!-- Main Cover -->
-    <rect x="0" y="0" width="500" height="800" rx="16" fill="url(#covergfm9ol)" filter="url(#shadowgfm9ol)"/>
+    <rect x="0" y="0" width="500" height="800" rx="16" fill="url(#coverywbr1p)" filter="url(#shadowywbr1p)"/>
     
     <!-- Ornamental Borders -->
     <rect x="20" y="20" width="460" height="760" rx="12" fill="none" stroke="#fb7185" stroke-width="4" opacity="0.9"/>
@@ -72,7 +72,8 @@
       <tspan x="250" dy="0" font-size="40">সত্যকথন — আরিফ</tspan>
       <tspan x="250" dy="56" font-size="36">আজাদ</tspan>
       
-    </text>
+      
+</text>
     
     <!-- Ornamental Divider Bottom -->
     <path d="M100 580 Q150 565 200 580 T300 580 T400 580" fill="none" stroke="#fb7185" stroke-width="2.5" opacity="0.7"/>
@@ -84,7 +85,7 @@
     <rect x="150" y="765" width="200" height="3" fill="#fb7185" opacity="0.3" rx="1.5"/>
     
     <!-- Shine Effect for 3D look -->
-    <rect x="0" y="0" width="180" height="800" rx="16" fill="url(#shinegfm9ol)"/>
+    <rect x="0" y="0" width="180" height="800" rx="16" fill="url(#shineywbr1p)"/>
     
     <!-- Corner Decorations -->
     <circle cx="60" cy="60" r="8" fill="none" stroke="#fb7185" stroke-width="1.5" opacity="0.4"/>

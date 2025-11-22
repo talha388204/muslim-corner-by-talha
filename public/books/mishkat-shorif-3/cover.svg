@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900">
   <defs>
-    <linearGradient id="bgseixa7" x1="0" x2="1" y1="0" y2="1">
+    <linearGradient id="bgnb0esc" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#4a2c0a"/>
       <stop offset="50%" stop-color="#6e490d"/>
       <stop offset="100%" stop-color="#4a2c0a"/>
     </linearGradient>
-    <linearGradient id="coverseixa7" x1="0" x2="1" y1="0" y2="1">
+    <linearGradient id="covernb0esc" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#8c5a1a"/>
       <stop offset="50%" stop-color="#b37722"/>
       <stop offset="100%" stop-color="#8c5a1a"/>
     </linearGradient>
-    <filter id="shadowseixa7" x="-20%" y="-20%" width="140%" height="140%">
+    <filter id="shadownb0esc" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#000" flood-opacity="0.7"/>
     </filter>
     
-      <pattern id="patternseixa7" x="0" y="0" width="90" height="90" patternUnits="userSpaceOnUse">
+      <pattern id="patternnb0esc" x="0" y="0" width="90" height="90" patternUnits="userSpaceOnUse">
         <!-- Ancient scroll -->
         <rect x="20" y="30" width="50" height="30" rx="3" fill="#fde047" opacity="0.06"/>
         <circle cx="20" cy="45" r="8" fill="#fde047" opacity="0.08"/>
@@ -24,14 +24,14 @@
         <line x1="28" y1="45" x2="62" y2="45" stroke="#fde047" stroke-width="1.5" opacity="0.1"/>
         <line x1="28" y1="52" x2="62" y2="52" stroke="#fde047" stroke-width="1.5" opacity="0.1"/>
       </pattern>
-    <linearGradient id="shineseixa7" x1="0" x2="1" y1="0" y2="0">
+    <linearGradient id="shinenb0esc" x1="0" x2="1" y1="0" y2="0">
       <stop offset="0%" stop-color="#fff" stop-opacity="0.2"/>
       <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
   </defs>
   
-  <rect width="100%" height="100%" fill="url(#bgseixa7)"/>
-  <rect width="100%" height="100%" fill="url(#patternseixa7)"/>
+  <rect width="100%" height="100%" fill="url(#bgnb0esc)"/>
+  <rect width="100%" height="100%" fill="url(#patternnb0esc)"/>
 
   <!-- 3D Book Container -->
   <g transform="translate(50,60)">
@@ -40,7 +40,7 @@
     <rect x="20" y="20" width="500" height="800" rx="16" fill="#4a2c0a"/>
     
     <!-- Main Cover -->
-    <rect x="0" y="0" width="500" height="800" rx="16" fill="url(#coverseixa7)" filter="url(#shadowseixa7)"/>
+    <rect x="0" y="0" width="500" height="800" rx="16" fill="url(#covernb0esc)" filter="url(#shadownb0esc)"/>
     
     <!-- Ornamental Borders -->
     <rect x="20" y="20" width="460" height="760" rx="12" fill="none" stroke="#fcd34d" stroke-width="4" opacity="0.9"/>
@@ -82,7 +82,7 @@
     <rect x="150" y="765" width="200" height="3" fill="#fcd34d" opacity="0.3" rx="1.5"/>
     
     <!-- Shine Effect for 3D look -->
-    <rect x="0" y="0" width="180" height="800" rx="16" fill="url(#shineseixa7)"/>
+    <rect x="0" y="0" width="180" height="800" rx="16" fill="url(#shinenb0esc)"/>
     
     <!-- Corner Decorations -->
     <circle cx="60" cy="60" r="8" fill="none" stroke="#fcd34d" stroke-width="1.5" opacity="0.4"/>
