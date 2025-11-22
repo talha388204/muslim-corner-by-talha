@@ -379,10 +379,7 @@ export default function BookReader() {
             </div>
           ) : (!pdfUrl || pdfUrl === 'undefined') ? (
             <div className="flex h-screen items-center justify-center">
-              <div className="text-center">
-                <p className="text-destructive mb-4">এই বইটির পিডিএফ লোড হচ্ছে...</p>
-                <LoadingIndicator message="অপেক্ষা করুন" />
-              </div>
+              <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
             </div>
           ) : (
             <Document
@@ -404,7 +401,7 @@ export default function BookReader() {
                   devicePixelRatio={2}
                   loading={
                     <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
-                      <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                      <LoadingIndicator size={60} message="" />
                     </div>
                   }
                   error={

@@ -12,13 +12,13 @@ export const LoadingIndicator = ({
 }: LoadingIndicatorProps) => {
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
-      <div style={{ width: size, height: size * 0.25 }}>
+      <div style={{ width: size, height: size }}>
         <Lottie 
           animationData={loadingAnimation} 
           loop={true}
           autoplay={true}
           rendererSettings={{
-            preserveAspectRatio: 'xMidYMid slice'
+            preserveAspectRatio: 'xMidYMid meet'
           }}
         />
       </div>
