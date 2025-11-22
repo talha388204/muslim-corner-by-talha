@@ -246,11 +246,18 @@ export default function BookReader() {
   const jumpToPage = (pageNum: number) => {
     if (pageNum < 1 || pageNum > numPages) return;
   
-    const container = document.getElementById('pdf-container');
-    const pages = container?.querySelectorAll('.react-pdf__Page');
-    if (pages && pages[pageNum - 1]) {
-      pages[pageNum - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    // Ensure the target page is rendered
+    setMaxVisiblePage((prev) => Math.max(prev, pageNum + 5));
+    
+    // Wait for render then scroll
+    setTimeout(() => {
+      const container = document.getElementById('pdf-container');
+      const pages = container?.querySelectorAll('.react-pdf__Page');
+      if (pages && pages[pageNum - 1]) {
+        pages[pageNum - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setCurrentPage(pageNum);
+      }
+    }, 100);
   };
 
   const pageWidth = Math.min(containerWidth * 0.95, 800);
