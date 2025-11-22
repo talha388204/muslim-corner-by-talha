@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import {
   ChevronLeft,
@@ -27,6 +27,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 export default function BookReader() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const book = books.find((b) => b.id === id);
 
   const [numPages, setNumPages] = useState<number>(0);
@@ -243,7 +244,7 @@ export default function BookReader() {
     });
   };
 
-  const jumpToPage = (pageNum: number) => {
+  const jumpToPage = useCallback((pageNum: number) => {
     if (pageNum < 1 || pageNum > numPages) return;
   
     // Ensure the target page is rendered
@@ -258,7 +259,18 @@ export default function BookReader() {
         setCurrentPage(pageNum);
       }
     }, 100);
-  };
+  }, [numPages]);
+
+  // Handle URL query parameter for jumping to a specific page
+  useEffect(() => {
+    const pageParam = searchParams.get('page');
+    if (pageParam && numPages > 0) {
+      const targetPage = parseInt(pageParam);
+      if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= numPages) {
+        jumpToPage(targetPage);
+      }
+    }
+  }, [searchParams, numPages, jumpToPage]);
 
   const pageWidth = Math.min(containerWidth * 0.95, 800);
   const pagesToRender =

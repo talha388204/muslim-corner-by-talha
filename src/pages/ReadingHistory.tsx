@@ -87,7 +87,7 @@ export default function ReadingHistory() {
               <Card 
                 key={item!.progress.bookId}
                 className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
-                onClick={() => navigate(`/reader/${item!.book.id}`)}
+                onClick={() => navigate(`/reader/${item!.book.id}?page=${item!.progress.currentPage}`)}
               >
                 <div className="p-4">
                   <div className="flex gap-4">
