@@ -2,15 +2,23 @@ import { TopNav } from "@/components/TopNav";
 import { BottomNav } from "@/components/BottomNav";
 import { BookCard } from "@/components/BookCard";
 import { getLibrary } from "@/lib/offlineStorage";
+import { books } from "@/data/books";
 import { useState, useEffect } from "react";
 import { Library as LibraryIcon, Download } from "lucide-react";
 
 export default function Library() {
-  const [libraryBooks, setLibraryBooks] = useState(getLibrary());
+  // Only show library books that exist in the main books data
+  const [libraryBooks, setLibraryBooks] = useState(() => 
+    getLibrary().filter(book => books.some(b => b.id === book.id))
+  );
 
   useEffect(() => {
     const updateLibrary = () => {
-      setLibraryBooks(getLibrary());
+      // Filter out books that don't exist in the main books data
+      const validLibraryBooks = getLibrary().filter(book => 
+        books.some(b => b.id === book.id)
+      );
+      setLibraryBooks(validLibraryBooks);
     };
     
     window.addEventListener('storage', updateLibrary);

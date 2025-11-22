@@ -8,19 +8,19 @@ export default function Bookmarks() {
   const allProgress = getAllProgress();
   const library = getLibrary();
 
-  // Get all bookmarks with book info
+  // Get all bookmarks with book info - only from books that exist in the app
   const bookmarksData = allProgress
     .filter(progress => progress.bookmarks && progress.bookmarks.length > 0)
     .map(progress => {
-      const book = books.find(b => b.id === progress.bookId) || 
-                   library.find(b => b.id === progress.bookId);
+      // Only get books from the main books data (not from library which might have stale data)
+      const book = books.find(b => b.id === progress.bookId);
       return {
         book,
         bookmarks: progress.bookmarks,
         totalPages: progress.totalPages
       };
     })
-    .filter(item => item.book);
+    .filter(item => item.book); // Only show if book exists in app
 
   return (
     <div className="min-h-screen bg-background pb-20">
