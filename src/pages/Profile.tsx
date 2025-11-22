@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { TopNav } from "@/components/TopNav";
 import { BottomNav } from "@/components/BottomNav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 export default function Profile() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalBooks: 0,
     downloadedBooks: 0,
@@ -53,9 +55,12 @@ export default function Profile() {
           <p className="text-sm text-muted-foreground">আপনার পড়ার পরিসংখ্যান</p>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards - Clickable */}
         <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Card>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+            onClick={() => navigate('/library')}
+          >
             <CardContent className="flex flex-col items-center justify-center p-6">
               <BookOpen className="mb-2 text-primary" size={32} />
               <div className="text-2xl font-bold">{stats.totalBooks}</div>
@@ -63,7 +68,10 @@ export default function Profile() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+            onClick={() => navigate('/downloads')}
+          >
             <CardContent className="flex flex-col items-center justify-center p-6">
               <Download className="mb-2 text-primary" size={32} />
               <div className="text-2xl font-bold">{stats.downloadedBooks}</div>
@@ -71,7 +79,10 @@ export default function Profile() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+            onClick={() => navigate('/reading-history')}
+          >
             <CardContent className="flex flex-col items-center justify-center p-6">
               <BookOpen className="mb-2 text-primary" size={32} />
               <div className="text-2xl font-bold">{stats.readingBooks}</div>
@@ -79,7 +90,10 @@ export default function Profile() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+            onClick={() => navigate('/bookmarks')}
+          >
             <CardContent className="flex flex-col items-center justify-center p-6">
               <Bookmark className="mb-2 text-primary" size={32} />
               <div className="text-2xl font-bold">{stats.totalBookmarks}</div>

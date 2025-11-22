@@ -13,6 +13,8 @@ const BookReader = lazy(() => import("./pages/BookReader"));
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
 const Charts = lazy(() => import("./pages/Charts"));
 const Library = lazy(() => import("./pages/Library"));
+const Downloads = lazy(() => import("./pages/Downloads"));
+const ReadingHistory = lazy(() => import("./pages/ReadingHistory"));
 const SearchPage = lazy(() => import("./pages/SearchPage"));
 const Profile = lazy(() => import("./pages/Profile"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -37,6 +39,8 @@ const App = () => (
             <Route path="/bookmarks" element={<Bookmarks />} />
             <Route path="/charts" element={<Charts />} />
             <Route path="/library" element={<Library />} />
+            <Route path="/downloads" element={<Downloads />} />
+            <Route path="/reading-history" element={<ReadingHistory />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
