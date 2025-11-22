@@ -31,6 +31,7 @@ export default function BookReader() {
 
   const [numPages, setNumPages] = useState<number>(0);
   const [pagesLoaded, setPagesLoaded] = useState<number>(0);
+  const [maxVisiblePage, setMaxVisiblePage] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.2);
   const [showControls, setShowControls] = useState(true);
@@ -46,6 +47,7 @@ export default function BookReader() {
     setLoadError(null);
     setNumPages(0);
     setPagesLoaded(0);
+    setMaxVisiblePage(0);
     setPdfUrl("");
     
     // Load reading progress and bookmarks
@@ -138,6 +140,9 @@ export default function BookReader() {
       });
 
       setCurrentPage(closestPage);
+      setMaxVisiblePage((prev) =>
+        Math.max(prev, Math.min(numPages, closestPage + 5))
+      );
     };
 
     container.addEventListener('scroll', handleScroll);
@@ -158,6 +163,7 @@ export default function BookReader() {
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
     setLoadError(null);
+    setMaxVisiblePage(Math.min(numPages, 8));
   }
 
   function onDocumentLoadError(error: Error) {
@@ -246,13 +252,15 @@ export default function BookReader() {
     }
   };
 
-  // Calculate optimal width for PDF pages
   const pageWidth = Math.min(containerWidth * 0.95, 800);
+  const pagesToRender =
+    numPages > 0 ? (maxVisiblePage || Math.min(numPages, 8)) : 0;
+  const initialVisibleTarget = pagesToRender;
   const showInitialLoader =
     !loadError &&
     !!pdfUrl &&
     pdfUrl !== "undefined" &&
-    (numPages === 0 || pagesLoaded < Math.ceil(numPages / 2));
+    (numPages === 0 || pagesLoaded < initialVisibleTarget);
 
   return (
     <div
@@ -392,6 +400,7 @@ export default function BookReader() {
             </div>
           ) : (!pdfUrl || pdfUrl === 'undefined') ? (
             <div className="flex h-screen items-center justify-center">
+              {/* Initial load before PDF url is resolved - single global Lottie */}
               <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
             </div>
           ) : (
@@ -400,31 +409,42 @@ export default function BookReader() {
               file={pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={onDocumentLoadError}
-              loading={<div className="py-20"><LoadingIndicator message="পিডিএফ লোড হচ্ছে..." /></div>}
+              loading={
+                <div className="py-20 text-center text-sm text-muted-foreground">
+                  পিডিএফ প্রস্তুত হচ্ছে...
+                </div>
+              }
             >
-              {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
-                <Page
-                  key={`page_${index + 1}`}
-                  pageNumber={index + 1}
-                  width={pageWidth}
-                  scale={scale}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                  className="mb-2 shadow-lg"
-                  devicePixelRatio={2}
-                  onLoadSuccess={() => setPagesLoaded((prev) => prev + 1)}
-                  loading={
-                    <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
-                      <LoadingIndicator size={60} message="" />
-                    </div>
-                  }
-                  error={
-                    <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
-                      <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
-                    </div>
-                  }
-                />
-              ))}
+              {numPages > 0 &&
+                Array.from({ length: pagesToRender }, (el, index) => (
+                  <Page
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                    width={pageWidth}
+                    scale={scale}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    className="mb-2 shadow-lg"
+                    devicePixelRatio={2}
+                    onLoadSuccess={() => setPagesLoaded((prev) => prev + 1)}
+                    loading={
+                      <div
+                        className="flex items-center justify-center bg-card"
+                        style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
+                      >
+                        <p className="text-xs text-muted-foreground">পৃষ্ঠা লোড হচ্ছে...</p>
+                      </div>
+                    }
+                    error={
+                      <div
+                        className="flex items-center justify-center bg-card"
+                        style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
+                      >
+                        <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
+                      </div>
+                    }
+                  />
+                ))}
             </Document>
           )}
         </div>
