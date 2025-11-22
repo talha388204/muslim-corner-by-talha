@@ -161,13 +161,14 @@ export default function BookReader() {
   }
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    console.log('PDF loaded successfully with pages:', numPages, 'for', book?.id, pdfUrl);
     setNumPages(numPages);
     setLoadError(null);
     setMaxVisiblePage(Math.min(numPages, 8));
   }
 
   function onDocumentLoadError(error: Error) {
-    console.error('PDF load error:', error);
+    console.error('PDF load error for', book?.id, pdfUrl, error);
     setLoadError('পিডিএফ লোড করতে সমস্যা হয়েছে');
   }
 
