@@ -30,6 +30,7 @@ export default function BookReader() {
   const book = books.find((b) => b.id === id);
 
   const [numPages, setNumPages] = useState<number>(0);
+  const [pagesLoaded, setPagesLoaded] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.2);
   const [showControls, setShowControls] = useState(true);
@@ -44,6 +45,7 @@ export default function BookReader() {
     // Reset state when book changes
     setLoadError(null);
     setNumPages(0);
+    setPagesLoaded(0);
     setPdfUrl("");
     
     // Load reading progress and bookmarks
@@ -246,6 +248,11 @@ export default function BookReader() {
 
   // Calculate optimal width for PDF pages
   const pageWidth = Math.min(containerWidth * 0.95, 800);
+  const showInitialLoader =
+    !loadError &&
+    !!pdfUrl &&
+    pdfUrl !== "undefined" &&
+    (numPages === 0 || pagesLoaded < Math.ceil(numPages / 2));
 
   return (
     <div
@@ -360,6 +367,12 @@ export default function BookReader() {
         </div>
       </div>
 
+      {showInitialLoader && (
+        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center">
+          <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
+        </div>
+      )}
+
       {/* PDF Viewer - Continuous Scroll */}
       <div 
         id="pdf-container"
@@ -391,7 +404,7 @@ export default function BookReader() {
             >
               {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page
-                  key={`page_${index + 1}_${scale}`}
+                  key={`page_${index + 1}`}
                   pageNumber={index + 1}
                   width={pageWidth}
                   scale={scale}
@@ -399,6 +412,7 @@ export default function BookReader() {
                   renderAnnotationLayer={false}
                   className="mb-2 shadow-lg"
                   devicePixelRatio={2}
+                  onLoadSuccess={() => setPagesLoaded((prev) => prev + 1)}
                   loading={
                     <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
                       <LoadingIndicator size={60} message="" />
