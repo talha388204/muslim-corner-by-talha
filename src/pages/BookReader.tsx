@@ -246,13 +246,14 @@ export default function BookReader() {
     }
   };
 
-  // Calculate optimal width for PDF pages
   const pageWidth = Math.min(containerWidth * 0.95, 800);
+  const requiredLoadedForInitial =
+    numPages > 0 ? Math.min(Math.ceil(numPages / 2), 20) : 0;
   const showInitialLoader =
     !loadError &&
     !!pdfUrl &&
     pdfUrl !== "undefined" &&
-    (numPages === 0 || pagesLoaded < Math.ceil(numPages / 2));
+    (numPages === 0 || pagesLoaded < requiredLoadedForInitial);
 
   return (
     <div
@@ -392,6 +393,7 @@ export default function BookReader() {
             </div>
           ) : (!pdfUrl || pdfUrl === 'undefined') ? (
             <div className="flex h-screen items-center justify-center">
+              {/* Initial load before PDF url is resolved - single global Lottie */}
               <LoadingIndicator message="পিডিএফ লোড হচ্ছে..." />
             </div>
           ) : (
@@ -400,7 +402,11 @@ export default function BookReader() {
               file={pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={onDocumentLoadError}
-              loading={<div className="py-20"><LoadingIndicator message="পিডিএফ লোড হচ্ছে..." /></div>}
+              loading={
+                <div className="py-20 text-center text-sm text-muted-foreground">
+                  পিডিএফ প্রস্তুত হচ্ছে...
+                </div>
+              }
             >
               {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page
@@ -414,12 +420,18 @@ export default function BookReader() {
                   devicePixelRatio={2}
                   onLoadSuccess={() => setPagesLoaded((prev) => prev + 1)}
                   loading={
-                    <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
-                      <LoadingIndicator size={60} message="" />
+                    <div
+                      className="flex items-center justify-center bg-card"
+                      style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
+                    >
+                      <p className="text-xs text-muted-foreground">পৃষ্ঠা লোড হচ্ছে...</p>
                     </div>
                   }
                   error={
-                    <div className="flex items-center justify-center bg-card" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}>
+                    <div
+                      className="flex items-center justify-center bg-card"
+                      style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
+                    >
                       <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
                     </div>
                   }
