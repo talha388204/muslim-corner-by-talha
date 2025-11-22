@@ -16,7 +16,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { SearchDialog } from "@/components/reader/SearchDialog";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { addToLibrary, isInLibrary, saveProgress, getProgress, toggleBookmark as toggleBookmarkStorage } from "@/lib/offlineStorage";
+import { addToLibrary, isInLibrary, saveProgress, getProgress, toggleBookmark as toggleBookmarkStorage, markAsDownloaded } from "@/lib/offlineStorage";
+import { pdfCache } from "@/lib/pdfCache";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -37,11 +38,13 @@ export default function BookReader() {
   const [bookmarkedPages, setBookmarkedPages] = useState<number[]>([]);
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string>("");
 
   useEffect(() => {
     // Reset state when book changes
     setLoadError(null);
     setNumPages(0);
+    setPdfUrl("");
     
     // Load reading progress and bookmarks
     if (book) {
@@ -51,8 +54,33 @@ export default function BookReader() {
         setBookmarkedPages(progress.bookmarks || []);
       }
       setIsDownloaded(isInLibrary(book.id));
+      
+      // Load PDF from cache or fetch
+      loadPDF();
     }
   }, [book]);
+
+  const loadPDF = async () => {
+    if (!book) return;
+    
+    try {
+      // Try to get from cache first
+      const cachedUrl = await pdfCache.getCachedPDF(book.pdfUrl);
+      
+      if (cachedUrl) {
+        console.log('Loading PDF from cache');
+        setPdfUrl(cachedUrl);
+      } else {
+        console.log('Loading PDF from network');
+        setPdfUrl(book.pdfUrl);
+        // Cache in background
+        pdfCache.cachePDF(book.pdfUrl, book.id).catch(console.error);
+      }
+    } catch (error) {
+      console.error('Error loading PDF:', error);
+      setPdfUrl(book.pdfUrl);
+    }
+  };
 
   useEffect(() => {
     // Save reading progress
@@ -144,12 +172,12 @@ export default function BookReader() {
     }
 
     try {
-      // Cache the PDF for offline reading
-      const cache = await caches.open('muslim-corner-pdfs');
-      await cache.add(book.pdfUrl);
+      // Cache the PDF for offline reading using IndexedDB
+      await pdfCache.cachePDF(book.pdfUrl, book.id);
     
-      // Add to library
+      // Add to library and mark as downloaded
       addToLibrary(book);
+      markAsDownloaded(book.id);
       setIsDownloaded(true);
     
       toast.success("বইটি ডাউনলোড এবং লাইব্রেরিতে যোগ করা হয়েছে");
@@ -345,21 +373,20 @@ export default function BookReader() {
                 <Button onClick={() => window.location.reload()}>আবার চেষ্টা করুন</Button>
               </div>
             </div>
-          ) : (!book.pdfUrl || book.pdfUrl === 'undefined') ? (
+          ) : (!pdfUrl || pdfUrl === 'undefined') ? (
             <div className="flex h-screen items-center justify-center">
               <div className="text-center">
-                <p className="text-destructive mb-4">এই বইটির পিডিএফ উপলব্ধ নয়।</p>
-                <p className="text-sm text-muted-foreground mb-4">আপনি চাইলে বইটি পুনরায় ইম্পোর্ট করুন বা ডেভ টুল দিয়ে `public/books/{book.id}` ফোল্ডার চেক করুন।</p>
-                <Button onClick={() => navigate(-1)}>ফিরে যান</Button>
+                <p className="text-destructive mb-4">এই বইটির পিডিএফ লোড হচ্ছে...</p>
+                <LoadingIndicator message="অপেক্ষা করুন" />
               </div>
             </div>
           ) : (
             <Document
               key={book.id}
-              file={book.pdfUrl}
+              file={pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={onDocumentLoadError}
-              loading={<div className="py-20"><LoadingIndicator message="" /></div>}
+              loading={<div className="py-20"><LoadingIndicator message="পিডিএফ লোড হচ্ছে..." /></div>}
             >
               {numPages > 0 && Array.from(new Array(numPages), (el, index) => (
                 <Page

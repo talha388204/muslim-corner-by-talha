@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookCard } from "@/components/BookCard";
 import { CategoryTabs } from "@/components/CategoryTabs";
@@ -14,6 +14,7 @@ import { BookOpen } from "lucide-react";
 export default function Home() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("সকল");
+  const [displayCount, setDisplayCount] = useState(12); // Show 12 books initially
   
   // Get last read book
   const lastReadBook = useMemo(() => {
@@ -40,17 +41,34 @@ export default function Home() {
     };
   }, []);
 
-  const filteredBooks =
-    activeCategory === "সকল"
+  const filteredBooks = useMemo(() => {
+    const filtered = activeCategory === "সকল"
       ? books
       : books.filter((book) => book.categories.includes(activeCategory));
+    return filtered;
+  }, [activeCategory]);
+
+  const displayedBooks = useMemo(() => {
+    return filteredBooks.slice(0, displayCount);
+  }, [filteredBooks, displayCount]);
+
+  const hasMore = displayedBooks.length < filteredBooks.length;
+
+  const loadMore = useCallback(() => {
+    setDisplayCount(prev => prev + 12);
+  }, []);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    setActiveCategory(category);
+    setDisplayCount(12); // Reset display count on category change
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pb-20">
       <TopNav />
       <CategoryTabs
         activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
+        onCategoryChange={handleCategoryChange}
       />
 
       {/* Last Read Book Card */}
@@ -108,14 +126,31 @@ export default function Home() {
 
       {/* Books Grid */}
       <div className="container mx-auto px-4 py-6">
-        <h3 className="mb-4 text-lg font-semibold">
-          {activeCategory === "সকল" ? "সকল বই" : activeCategory}
-        </h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-lg font-semibold">
+            {activeCategory === "সকল" ? "সকল বই" : activeCategory}
+          </h3>
+          <span className="text-sm text-muted-foreground">
+            {displayedBooks.length} / {filteredBooks.length}
+          </span>
+        </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {filteredBooks.map((book) => (
+          {displayedBooks.map((book) => (
             <BookCard key={book.id} book={book} />
           ))}
         </div>
+
+        {hasMore && (
+          <div className="mt-6 text-center">
+            <Button 
+              onClick={loadMore}
+              variant="outline"
+              size="lg"
+            >
+              আরও দেখুন ({filteredBooks.length - displayedBooks.length} টি বই)
+            </Button>
+          </div>
+        )}
 
         {filteredBooks.length === 0 && (
           <div className="py-12 text-center text-muted-foreground">
