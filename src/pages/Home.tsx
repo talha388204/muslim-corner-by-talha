@@ -85,6 +85,15 @@ export default function Home() {
                   src={lastReadBook.book.coverUrl} 
                   alt={lastReadBook.book.title}
                   className="w-20 h-28 object-cover rounded shadow-md"
+                  loading="lazy"
+                  onError={(e) => {
+                    const currentSrc = e.currentTarget.src;
+                    if (currentSrc.endsWith('cover.jpg')) {
+                      e.currentTarget.src = currentSrc.replace('cover.jpg', 'cover.svg');
+                    } else if (currentSrc.endsWith('cover.svg')) {
+                      e.currentTarget.src = '/placeholder.svg';
+                    }
+                  }}
                 />
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
