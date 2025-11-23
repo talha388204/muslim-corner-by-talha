@@ -59,14 +59,13 @@ export const BookCard = ({ book }: BookCardProps) => {
             loading="lazy"
             onError={(e) => {
               const currentSrc = e.currentTarget.src;
-              // Try PNG if SVG fails
-              if (currentSrc.endsWith('.svg')) {
-                e.currentTarget.src = currentSrc.replace('.svg', '.png');
-              } 
-              // If PNG also fails, show placeholder
-              else {
-                setImgError(true);
+              // 1) Try fallback to original SVG cover if JPG is missing or broken
+              if (currentSrc.endsWith('cover.jpg')) {
+                e.currentTarget.src = currentSrc.replace('cover.jpg', 'cover.svg');
+                return;
               }
+              // 2) If SVG also fails, show generic placeholder
+              setImgError(true);
             }}
           />
         )}
