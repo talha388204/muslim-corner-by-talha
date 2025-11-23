@@ -1,11 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { createCanvas } from 'canvas';
+import { createCanvas, Image } from 'canvas';
 
 // Configure PDF.js worker
 const pdfjsLib = { getDocument };
 
+// Provide Image implementation for pdfjs in Node environment
+(globalThis as any).Image = Image;
 interface BookFolder {
   folderPath: string;
   pdfFile: string;
