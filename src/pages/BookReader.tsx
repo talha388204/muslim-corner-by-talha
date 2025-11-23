@@ -166,13 +166,13 @@ export default function BookReader() {
     console.log('PDF loaded successfully with pages:', numPages, 'for', book?.id, pdfUrl);
     setNumPages(numPages);
     setLoadError(null);
-    // Start with only 3 pages for faster initial load
-    setMaxVisiblePage(Math.min(numPages, 3));
+    // Start with 12 pages for faster initial view
+    setMaxVisiblePage(Math.min(numPages, 12));
     
-    // Aggressively preload more pages in background
+    // Preload more pages in background
     setTimeout(() => {
-      setMaxVisiblePage((prev) => Math.min(numPages, prev + 10));
-    }, 500);
+      setMaxVisiblePage((prev) => Math.min(numPages, prev + 15));
+    }, 1000);
   }
 
   function onDocumentLoadError(error: Error) {
@@ -282,8 +282,8 @@ export default function BookReader() {
   const pageWidth = Math.min(containerWidth * 0.95, 800);
   const pagesToRender =
     numPages > 0 ? maxVisiblePage : 0;
-  // Show loader only until first 2 pages load for faster perceived performance
-  const initialVisibleTarget = Math.min(2, numPages);
+  // Show loader until first 10 pages load
+  const initialVisibleTarget = Math.min(10, numPages);
   const showInitialLoader =
     !loadError &&
     !!pdfUrl &&
