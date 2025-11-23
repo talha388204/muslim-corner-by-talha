@@ -19,7 +19,7 @@ export const books: Book[] = [
     title: "আদর্শ পরিবার গঠনে ৪০ টি উপদেশ মুহাম্মাদ সালেহ আল মুনাজ্জিদ",
     author: "",
     description: "Imported",
-    coverUrl: "/books/adarsho-poribar-40-upodesh-muhammad-saleh-al-munajid/cover.svg",
+    coverUrl: "/books/adarsho-poribar-40-upodesh-muhammad-saleh-al-munajid/cover.jpg",
     pdfUrl: "/books/adarsho-poribar-40-upodesh-muhammad-saleh-al-munajid/আদর্শ-পরিবার-গঠনে-৪০-টি-উপদেশ-মুহাম্মাদ-সালেহ-আল-মুনাজ্জিদ.pdf",
     pages: 0,
     categories: ["ইসলামিক কর্নার"],
