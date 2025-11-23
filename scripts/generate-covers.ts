@@ -52,27 +52,48 @@ async function extractFirstPageAsCover(pdfPath: string, outputPath: string): Pro
     const loadingTask = pdfjsLib.getDocument({
       data,
       useSystemFonts: true,
-      standardFontDataUrl: undefined
+      standardFontDataUrl: undefined,
+      // Disable problematic image decoders
+      disableFontFace: false,
+      isEvalSupported: false,
+      cMapUrl: undefined,
+      cMapPacked: false
     });
     
     const pdfDoc = await loadingTask.promise;
     const page = await pdfDoc.getPage(1);
 
-    // Get viewport with scale for high quality
-    const viewport = page.getViewport({ scale: 2.0 });
+    // Get viewport with higher scale for better quality
+    const viewport = page.getViewport({ scale: 3.0 });
     
     // Create canvas
     const canvas = createCanvas(viewport.width, viewport.height);
     const context = canvas.getContext('2d');
 
-    // Render page to canvas
-    await page.render({
-      canvasContext: context as any,
-      viewport: viewport
-    }).promise;
+    // Fill white background first
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, viewport.width, viewport.height);
 
-    // Save as JPG
-    const buffer = canvas.toBuffer('image/jpeg', { quality: 0.95 });
+    // Render page to canvas with better settings
+    const renderContext = {
+      canvasContext: context as any,
+      viewport: viewport,
+      intent: 'print' as const,
+      enableWebGL: false,
+      renderInteractiveForms: false,
+      // Use a transform to ensure proper rendering
+      transform: undefined,
+      background: 'white'
+    };
+
+    await page.render(renderContext).promise;
+
+    // Save as JPG with high quality
+    const buffer = canvas.toBuffer('image/jpeg', { 
+      quality: 0.95,
+      progressive: true,
+      chromaSubsampling: false
+    });
     fs.writeFileSync(outputPath, buffer);
 
     // Clean up
