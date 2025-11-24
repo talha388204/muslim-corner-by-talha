@@ -153,8 +153,8 @@ export default function Home() {
           <div className="mt-6 text-center">
             <Button 
               onClick={loadMore}
-              variant="outline"
               size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
               আরও দেখুন ({filteredBooks.length - displayedBooks.length} টি বই)
             </Button>
