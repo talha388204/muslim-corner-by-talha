@@ -42,6 +42,21 @@ export default function BookReader() {
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  // Monitor online/offline status
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     // Reset state when book changes
@@ -75,6 +90,9 @@ export default function BookReader() {
       if (cachedUrl) {
         console.log('Loading PDF from cache');
         setPdfUrl(cachedUrl);
+      } else if (!navigator.onLine) {
+        // Offline and no cache
+        setLoadError('আপনি অফলাইনে আছেন এবং এই বইটি ক্যাশ করা নেই');
       } else {
         console.log('Loading PDF from network');
         setPdfUrl(book.pdfUrl);
@@ -83,7 +101,11 @@ export default function BookReader() {
       }
     } catch (error) {
       console.error('Error loading PDF:', error);
-      setPdfUrl(book.pdfUrl);
+      if (!navigator.onLine) {
+        setLoadError('অফলাইনে বইটি লোড করা যায়নি। প্রথমে অনলাইনে খুলুন।');
+      } else {
+        setPdfUrl(book.pdfUrl);
+      }
     }
   };
 
@@ -177,7 +199,11 @@ export default function BookReader() {
 
   function onDocumentLoadError(error: Error) {
     console.error('PDF load error for', book?.id, pdfUrl, error);
-    setLoadError('পিডিএফ লোড করতে সমস্যা হয়েছে');
+    if (!navigator.onLine) {
+      setLoadError('অফলাইনে বইটি লোড করা যায়নি। অনলাইনে প্রথমবার খুলুন।');
+    } else {
+      setLoadError('পিডিএফ লোড করতে সমস্যা হয়েছে');
+    }
   }
 
   const handleDownload = async () => {
@@ -319,6 +345,11 @@ export default function BookReader() {
             <Menu className="h-4 w-4 md:h-5 md:w-5" />
           </Button>
         </div>
+        {!isOnline && (
+          <div className="bg-destructive/10 border-t border-destructive/20 px-4 py-1.5 text-center">
+            <p className="text-xs text-destructive">অফলাইন মোড - শুধুমাত্র ক্যাশ করা বই দেখা যাবে</p>
+          </div>
+        )}
       </header>
 
       {/* Controls - Toggle Visibility */}
@@ -421,9 +452,17 @@ export default function BookReader() {
         <div className="flex flex-col items-center gap-2 p-2 md:p-4">
           {loadError ? (
             <div className="flex h-screen items-center justify-center">
-              <div className="text-center">
+              <div className="text-center px-4">
                 <p className="text-destructive mb-4">{loadError}</p>
-                <Button onClick={() => window.location.reload()}>আবার চেষ্টা করুন</Button>
+                {!isOnline ? (
+                  <p className="text-sm text-muted-foreground mb-4">
+                    অফলাইনে পড়তে প্রথমে অনলাইনে বইটি খুলুন এবং ডাউনলোড করুন
+                  </p>
+                ) : null}
+                <Button onClick={() => {
+                  setLoadError(null);
+                  loadPDF();
+                }}>আবার চেষ্টা করুন</Button>
               </div>
             </div>
           ) : (!pdfUrl || pdfUrl === 'undefined') ? (
