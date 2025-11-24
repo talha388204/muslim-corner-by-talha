@@ -8,7 +8,7 @@ interface CategoryTabsProps {
 
 export const CategoryTabs = ({ activeCategory, onCategoryChange }: CategoryTabsProps) => {
   return (
-    <div className="sticky top-[57px] z-30 border-b border-border bg-background">
+    <div className="sticky top-[56px] z-30 border-b border-border bg-background shadow-sm">
       <div className="flex gap-4 overflow-x-auto px-4 scrollbar-hide">
         {categories.map((category) => (
           <button
