@@ -14,13 +14,14 @@ import { Book } from "@/types/book";
 // =====================================================
 
 export const books: Book[] = [
+
   {
-    id: "আদর্শ-পরিবার-গঠনে-৪০-টি-উপদেশ-মুহাম্মাদ-সালেহ-আল-মুনাজ্জিদ",
-    title: "আদর্শ পরিবার গঠনে ৪০ টি উপদেশ মুহাম্মাদ সালেহ আল মুনাজ্জিদ",
+    id: "23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib",
+    title: "নবীদের জীবন কাহিনি-১",
     author: "",
     description: "Imported",
-    coverUrl: "/books/adarsho-poribar-40-upodesh-muhammad-saleh-al-munajid/cover.jpg",
-    pdfUrl: "/books/adarsho-poribar-40-upodesh-muhammad-saleh-al-munajid/আদর্শ-পরিবার-গঠনে-৪০-টি-উপদেশ-মুহাম্মাদ-সালেহ-আল-মুনাজ্জিদ.pdf",
+    coverUrl: "/books/23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib/cover.jpg",
+    pdfUrl: "/books/23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib/23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib.pdf",
     pages: 0,
     categories: ["ইসলামিক কর্নার"],
     ratingAvg: 4,
@@ -28,6 +29,65 @@ export const books: Book[] = [
     badge: "",
     featured: false
   },
+  {
+    id: "24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib",
+    title: "নবীদের জীবন কাহিনি-২",
+    author: "",
+    description: "Imported",
+    coverUrl: "/books/24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib/cover.jpg",
+    pdfUrl: "/books/24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib/24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib.pdf",
+    pages: 0,
+    categories: ["ইসলামিক কর্নার"],
+    ratingAvg: 4,
+    ratingsCount: 0,
+    badge: "",
+    featured: false
+  },
+  {
+    id: "59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib",
+    title: "সীরাতুর রাসুল-3",
+    author: "",
+    description: "Imported",
+    coverUrl: "/books/59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib/cover.jpg",
+    pdfUrl: "/books/59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib/59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib.pdf",
+    pages: 0,
+    categories: ["ইসলামিক কর্নার"],
+    ratingAvg: 4,
+    ratingsCount: 0,
+    badge: "",
+    featured: false
+  },
+  {
+    id: "sahitto-07-rasuler-chokhe-duniya",
+    title: "রাসুলের চোখে দুনিয়া",
+    author: "",
+    description: "Imported",
+    coverUrl: "/books/sahitto-07/cover.jpg",
+    pdfUrl: "/books/sahitto-07/রাসুলের চোখে দুনিয়া.pdf",
+    pages: 0,
+    categories: ["ইসলামিক সাহিত্য"],
+    ratingAvg: 4,
+    ratingsCount: 0,
+    badge: "",
+    featured: false
+  },
+
+  {
+    id: "সাহাবিদের-চোখে-দুনিয়া-ইমাম-আহমাদ-ইবনে-হাম্বল-রহঃ",
+    title: "সাহাবিদের চোখে দুনিয়া ইমাম আহমাদ ইবনে হাম্বল (রহঃ)",
+    author: "",
+    description: "Imported",
+    coverUrl: "/books/sahabider-chokhe-dunia-imam-ahmad-ibne-hanbal/cover.jpg",
+    pdfUrl: "/books/sahabider-chokhe-dunia-imam-ahmad-ibne-hanbal/সাহাবিদের-চোখে-দুনিয়া-ইমাম-আহমাদ-ইবনে-হাম্বল-রহঃ.pdf",
+    pages: 0,
+    categories: ["ইসলামিক কর্নার"],
+    ratingAvg: 4,
+    ratingsCount: 0,
+    badge: "",
+    featured: false
+  },
+
+  
   {
     id: "ইসলামের-ইতিহাস-নববী-যুগ-থেকে-বর্তমান-ড-মুহাম্মাদ-ইবরাহিম-আশ-শারিকি",
     title: "ইসলামের ইতিহাস (নববী যুগ থেকে বর্তমান) ড মুহাম্মাদ ইবরাহিম আশ শারিকি",
@@ -98,13 +158,14 @@ export const books: Book[] = [
     badge: "",
     featured: false
   },
+  
   {
-    id: "সাহাবিদের-চোখে-দুনিয়া-ইমাম-আহমাদ-ইবনে-হাম্বল-রহঃ",
-    title: "সাহাবিদের চোখে দুনিয়া ইমাম আহমাদ ইবনে হাম্বল (রহঃ)",
+    id: "আদর্শ-পরিবার-গঠনে-৪০-টি-উপদেশ-মুহাম্মাদ-সালেহ-আল-মুনাজ্জিদ",
+    title: "আদর্শ পরিবার গঠনে ৪০ টি উপদেশ মুহাম্মাদ সালেহ আল মুনাজ্জিদ",
     author: "",
     description: "Imported",
-    coverUrl: "/books/sahabider-chokhe-dunia-imam-ahmad-ibne-hanbal/cover.jpg",
-    pdfUrl: "/books/sahabider-chokhe-dunia-imam-ahmad-ibne-hanbal/সাহাবিদের-চোখে-দুনিয়া-ইমাম-আহমাদ-ইবনে-হাম্বল-রহঃ.pdf",
+    coverUrl: "/books/adarsho-poribar-40-upodesh-muhammad-saleh-al-munajid/cover.jpg",
+    pdfUrl: "/books/adarsho-poribar-40-upodesh-muhammad-saleh-al-munajid/আদর্শ-পরিবার-গঠনে-৪০-টি-উপদেশ-মুহাম্মাদ-সালেহ-আল-মুনাজ্জিদ.pdf",
     pages: 0,
     categories: ["ইসলামিক কর্নার"],
     ratingAvg: 4,
@@ -126,20 +187,7 @@ export const books: Book[] = [
     badge: "",
     featured: false
   },
-  {
-    id: "23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib",
-    title: "নবীদের জীবন কাহিনি-১",
-    author: "",
-    description: "Imported",
-    coverUrl: "/books/23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib/cover.jpg",
-    pdfUrl: "/books/23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib/23-nobider-kahini-part-1-by-dr-md-asadullah-al-ghalib.pdf",
-    pages: 0,
-    categories: ["ইসলামিক কর্নার"],
-    ratingAvg: 4,
-    ratingsCount: 0,
-    badge: "",
-    featured: false
-  },
+  
   {
     id: "sahitto-01-atmo-bisshos",
     title: "আত্ম বিশ্বাস",
@@ -224,20 +272,7 @@ export const books: Book[] = [
     badge: "",
     featured: false
   },
-  {
-    id: "sahitto-07-rasuler-chokhe-duniya",
-    title: "রাসুলের চোখে দুনিয়া",
-    author: "",
-    description: "Imported",
-    coverUrl: "/books/sahitto-07/cover.jpg",
-    pdfUrl: "/books/sahitto-07/রাসুলের চোখে দুনিয়া.pdf",
-    pages: 0,
-    categories: ["ইসলামিক সাহিত্য"],
-    ratingAvg: 4,
-    ratingsCount: 0,
-    badge: "",
-    featured: false
-  },
+  
   {
     id: "sahitto-08-sera-hok-ramadan",
     title: "সেরা হোক এবারের রমাদান",
@@ -252,34 +287,7 @@ export const books: Book[] = [
     badge: "",
     featured: false
   },
-  {
-    id: "24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib",
-    title: "নবীদের জীবন কাহিনি-২",
-    author: "",
-    description: "Imported",
-    coverUrl: "/books/24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib/cover.jpg",
-    pdfUrl: "/books/24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib/24-nobider-kahini-part-2-by-dr-md-asadullah-al-ghalib.pdf",
-    pages: 0,
-    categories: ["ইসলামিক কর্নার"],
-    ratingAvg: 4,
-    ratingsCount: 0,
-    badge: "",
-    featured: false
-  },
-  {
-    id: "59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib",
-    title: "সীরাতুর রাসুল-3",
-    author: "",
-    description: "Imported",
-    coverUrl: "/books/59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib/cover.jpg",
-    pdfUrl: "/books/59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib/59-seeratur-rasool-sm-by-prof-dr-muhammad-asadullah-al-ghalib.pdf",
-    pages: 0,
-    categories: ["ইসলামিক কর্নার"],
-    ratingAvg: 4,
-    ratingsCount: 0,
-    badge: "",
-    featured: false
-  },
+  
   {
     id: "itihas-1",
     title: "ইসলামের_ইতিহাস_প্রথম_খন্ড",
@@ -387,6 +395,34 @@ export const books: Book[] = [
     pdfUrl: "/books/itihas-8/itihas-8.pdf",
     pages: 0,
     categories: ["ইতিহাস"],
+    ratingAvg: 4,
+    ratingsCount: 0,
+    badge: "",
+    featured: false
+  },
+  {
+    id: "আর_রাহীকুল_মাকতুম_সমকালীন_প্রকাশনী_",
+    title: "আর_রাহীকুল_মাকতুম_সমকালীন_প্রকাশনী_",
+    author: "",
+    description: "Imported",
+    coverUrl: "/books/আর_রাহীকুল_মাকতুম_সমকালীন_প্রকাশনী_/cover.jpg",
+    pdfUrl: "/books/আর_রাহীকুল_মাকতুম_সমকালীন_প্রকাশনী_/আর_রাহীকুল_মাকতুম_সমকালীন_প্রকাশনী_.pdf",
+    pages: 0,
+    categories: ["ইসলামিক কর্নার"],
+    ratingAvg: 4,
+    ratingsCount: 0,
+    badge: "",
+    featured: false
+  },
+  {
+    id: "গাণিতিক_রহস্যময়_কুরআন_আহমেদ_দিদার",
+    title: "গাণিতিক_রহস্যময়_কুরআন_আহমেদ_দিদার",
+    author: "",
+    description: "Imported",
+    coverUrl: "/books/গাণিতিক_রহস্যময়_কুরআন_আহমেদ_দিদার/cover.jpg",
+    pdfUrl: "/books/গাণিতিক_রহস্যময়_কুরআন_আহমেদ_দিদার/গাণিতিক_রহস্যময়_কুরআন_আহমেদ_দিদার.pdf",
+    pages: 0,
+    categories: ["ইসলামিক কর্নার"],
     ratingAvg: 4,
     ratingsCount: 0,
     badge: "",
