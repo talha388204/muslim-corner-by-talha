@@ -13,7 +13,7 @@ import { Book } from "@/types/book";
 // Thumbnail Script: scripts/README.md
 // =====================================================
 
-export const books: Book[
+export const books: Book[] = [
   {
     id: "আন্দালুসের_ইতিহাস_১ম_খণ্ড",
     title: "আন্দালুসের ইতিহাস ১ম খণ্ড pdf",
@@ -27,7 +27,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "আন্দালুসের_ইতিহাস_২য়_খণ্ড",
     title: "আন্দালুসের ইতিহাস ২য় খণ্ড pdf",
     author: "",
@@ -40,7 +41,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_চতুর্থ_খন্ড_রাগিব_সারজানি",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ চতুর্থ খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -53,7 +55,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_তৃতীয়_খন্ড_রাগিব_সারজানি_",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ তৃতীয় খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -66,7 +69,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_দ্বিতীয়_খন্ড_রাগিব_সারজানি_",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ দ্বিতীয় খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -79,7 +83,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_পন্চম_খন্ড_রাগিব_সারজানি",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ পন্চম খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -92,7 +97,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_প্রথম_খন্ড_রাগিব_সারজানি_",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ প্রথম খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -105,7 +111,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "সেলজুক_সম্রাজ্যের_ইতিহাস_১ম_খণ্ড_",
     title: "সেলজুক সম্রাজ্যের ইতিহাস ১ম খণ্ড pdf",
     author: "",
@@ -118,7 +125,7 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n
+  },
   {
     id: "আন্দালুসের_ইতিহাস_১ম_খণ্ড",
     title: "আন্দালুসের ইতিহাস ১ম খণ্ড pdf",
@@ -132,7 +139,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "আন্দালুসের_ইতিহাস_২য়_খণ্ড",
     title: "আন্দালুসের ইতিহাস ২য় খণ্ড pdf",
     author: "",
@@ -145,7 +153,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_চতুর্থ_খন্ড_রাগিব_সারজানি",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ চতুর্থ খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -158,7 +167,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_তৃতীয়_খন্ড_রাগিব_সারজানি_",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ তৃতীয় খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -171,7 +181,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_দ্বিতীয়_খন্ড_রাগিব_সারজানি_",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ দ্বিতীয় খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -184,7 +195,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_পন্চম_খন্ড_রাগিব_সারজানি",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ পন্চম খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -197,7 +209,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "ইসলামের_ইতিহাস_সংক্ষিপ্ত_বিশ্বকোষ_প্রথম_খন্ড_রাগিব_সারজানি_",
     title: "ইসলামের ইতিহাস সংক্ষিপ্ত বিশ্বকোষ প্রথম খন্ড রাগিব সারজানি pdf",
     author: "",
@@ -210,7 +223,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n  {
+  },
+  {
     id: "সেলজুক_সম্রাজ্যের_ইতিহাস_১ম_খণ্ড_",
     title: "সেলজুক সম্রাজ্যের ইতিহাস ১ম খণ্ড pdf",
     author: "",
@@ -223,9 +237,8 @@ export const books: Book[
     ratingsCount: 0,
     badge: "",
     featured: false
-  },\n
-] = [
-{
+  },
+  {
     id: "da-zakir-nayek-lecture-somogro-1",
     title: "ডাঃ জাকির নায়েক লেকচার সমগ্র ১ম খণ্ড",
     author: "পিস পাবলিকেশন",
