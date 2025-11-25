@@ -458,7 +458,7 @@ export default function BookReader() {
 
       {/* Controls - Toggle Visibility */}
       <div
-        className={`fixed left-0 right-0 top-[48px] md:top-[56px] z-40 bg-card/95 backdrop-blur border-t border-border transition-transform ${
+        className={`fixed left-0 right-0 ${!isOnline ? 'top-[76px] md:top-[84px]' : 'top-[48px] md:top-[56px]'} z-40 bg-card/95 backdrop-blur border-t border-border transition-transform ${
           showControls ? "translate-y-0" : "-translate-y-full"
         }`}
       >
