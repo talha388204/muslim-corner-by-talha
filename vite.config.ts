@@ -28,16 +28,16 @@ export default defineConfig(({ mode }) => ({
         start_url: "/",
         icons: [
           {
-            src: "/placeholder.svg",
+            src: "/icon-192.jpg",
             sizes: "192x192",
-            type: "image/svg+xml",
+            type: "image/jpeg",
             purpose: "any maskable"
           },
           {
-            src: "/placeholder.svg",
+            src: "/icon-512.jpg",
             sizes: "512x512",
-            type: "image/svg+xml",
-            purpose: "any maskable"
+            type: "image/jpeg",
+            "purpose": "any maskable"
           }
         ]
       },
