@@ -165,7 +165,7 @@ export default function BookReader() {
       setCurrentPage(closestPage);
       // Aggressively preload pages ahead
       setMaxVisiblePage((prev) =>
-        Math.max(prev, Math.min(numPages, closestPage + 25))
+        Math.max(prev, Math.min(numPages, closestPage + 15))
       );
     };
 
@@ -188,23 +188,13 @@ export default function BookReader() {
     console.log('PDF loaded successfully with pages:', numPages, 'for', book?.id, pdfUrl);
     setNumPages(numPages);
     setLoadError(null);
+    // Start with 12 pages for faster initial view
+    setMaxVisiblePage(Math.min(numPages, 12));
     
-    // Check if we need to jump to a specific page
-    const pageParam = searchParams.get('page');
-    const targetPage = pageParam ? parseInt(pageParam) : currentPage;
-    
-    if (targetPage > 1 && targetPage <= numPages) {
-      // Jump directly to target page for cached PDFs
-      setMaxVisiblePage(Math.min(numPages, targetPage + 20));
-    } else {
-      // Start with 12 pages for faster initial view
-      setMaxVisiblePage(Math.min(numPages, 12));
-      
-      // Preload more pages in background
-      setTimeout(() => {
-        setMaxVisiblePage((prev) => Math.min(numPages, prev + 20));
-      }, 500);
-    }
+    // Preload more pages in background
+    setTimeout(() => {
+      setMaxVisiblePage((prev) => Math.min(numPages, prev + 15));
+    }, 1000);
   }
 
   function onDocumentLoadError(error: Error) {
@@ -290,18 +280,18 @@ export default function BookReader() {
   const jumpToPage = useCallback((pageNum: number) => {
     if (pageNum < 1 || pageNum > numPages) return;
   
-    // Aggressively load pages around target for instant jump
-    setMaxVisiblePage(Math.min(numPages, pageNum + 20));
-    setCurrentPage(pageNum);
+    // Ensure the target page is rendered
+    setMaxVisiblePage((prev) => Math.max(prev, pageNum + 5));
     
-    // Immediate scroll without waiting
-    requestAnimationFrame(() => {
+    // Wait for render then scroll
+    setTimeout(() => {
       const container = document.getElementById('pdf-container');
       const pages = container?.querySelectorAll('.react-pdf__Page');
       if (pages && pages[pageNum - 1]) {
-        pages[pageNum - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
+        pages[pageNum - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setCurrentPage(pageNum);
       }
-    });
+    }, 100);
   }, [numPages]);
 
   // Handle URL query parameter for jumping to a specific page
