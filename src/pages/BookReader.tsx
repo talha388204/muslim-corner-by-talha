@@ -33,7 +33,10 @@ export default function BookReader() {
   const [numPages, setNumPages] = useState<number>(0);
   const [pagesLoaded, setPagesLoaded] = useState<number>(0);
   const [maxVisiblePage, setMaxVisiblePage] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(() => {
+    const pageParam = searchParams.get('page');
+    return pageParam ? parseInt(pageParam) || 1 : 1;
+  });
   const [scale, setScale] = useState<number>(1.2);
   const [showControls, setShowControls] = useState(true);
   const [containerWidth, setContainerWidth] = useState<number>(0);
@@ -88,8 +91,15 @@ export default function BookReader() {
       const cachedUrl = await pdfCache.getCachedPDF(book.pdfUrl);
       
       if (cachedUrl) {
-        console.log('Loading PDF from cache');
+        console.log('Loading PDF from cache - instant load');
         setPdfUrl(cachedUrl);
+        // Cached PDFs load instantly, so prepare for quick rendering
+        const pageParam = searchParams.get('page');
+        const targetPage = pageParam ? parseInt(pageParam) || 1 : 1;
+        if (targetPage > 1) {
+          // Pre-set max visible page for faster initial render
+          setMaxVisiblePage(Math.min(book.pages || 999, targetPage + 10));
+        }
       } else if (!navigator.onLine) {
         // Offline and no cache
         setLoadError('আপনি অফলাইনে আছেন এবং এই বইটি ক্যাশ করা নেই');
@@ -188,13 +198,27 @@ export default function BookReader() {
     console.log('PDF loaded successfully with pages:', numPages, 'for', book?.id, pdfUrl);
     setNumPages(numPages);
     setLoadError(null);
-    // Start with 12 pages for faster initial view
-    setMaxVisiblePage(Math.min(numPages, 12));
+    
+    // If user is jumping to a specific page, load up to that page + buffer
+    const pageParam = searchParams.get('page');
+    const targetPage = pageParam ? parseInt(pageParam) || 1 : 1;
+    
+    if (targetPage > 12) {
+      // For deep page jumps, load up to target page + buffer immediately
+      setMaxVisiblePage(Math.min(numPages, targetPage + 10));
+      // Then scroll to target page after a brief delay for rendering
+      setTimeout(() => {
+        jumpToPage(targetPage);
+      }, 300);
+    } else {
+      // Normal initial load - start with first 12 pages
+      setMaxVisiblePage(Math.min(numPages, 12));
+    }
     
     // Preload more pages in background
     setTimeout(() => {
-      setMaxVisiblePage((prev) => Math.min(numPages, prev + 15));
-    }, 1000);
+      setMaxVisiblePage((prev) => Math.min(numPages, Math.max(prev + 20, targetPage + 15)));
+    }, 800);
   }
 
   function onDocumentLoadError(error: Error) {
@@ -281,29 +305,28 @@ export default function BookReader() {
     if (pageNum < 1 || pageNum > numPages) return;
   
     // Ensure the target page is rendered
-    setMaxVisiblePage((prev) => Math.max(prev, pageNum + 5));
+    setMaxVisiblePage((prev) => Math.max(prev, pageNum + 10));
     
-    // Wait for render then scroll
-    setTimeout(() => {
-      const container = document.getElementById('pdf-container');
-      const pages = container?.querySelectorAll('.react-pdf__Page');
-      if (pages && pages[pageNum - 1]) {
-        pages[pageNum - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setCurrentPage(pageNum);
-      }
-    }, 100);
+    // Immediate scroll without delay for better UX
+    const container = document.getElementById('pdf-container');
+    const pages = container?.querySelectorAll('.react-pdf__Page');
+    if (pages && pages[pageNum - 1]) {
+      pages[pageNum - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
+      setCurrentPage(pageNum);
+    } else {
+      // Page not rendered yet, wait a bit
+      setTimeout(() => {
+        const container = document.getElementById('pdf-container');
+        const pages = container?.querySelectorAll('.react-pdf__Page');
+        if (pages && pages[pageNum - 1]) {
+          pages[pageNum - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
+          setCurrentPage(pageNum);
+        }
+      }, 200);
+    }
   }, [numPages]);
 
-  // Handle URL query parameter for jumping to a specific page
-  useEffect(() => {
-    const pageParam = searchParams.get('page');
-    if (pageParam && numPages > 0) {
-      const targetPage = parseInt(pageParam);
-      if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= numPages) {
-        jumpToPage(targetPage);
-      }
-    }
-  }, [searchParams, numPages, jumpToPage]);
+  // Note: Initial page jump is now handled in onDocumentLoadSuccess for faster loading
 
   const pageWidth = Math.min(containerWidth * 0.95, 800);
   const pagesToRender =
@@ -489,17 +512,17 @@ export default function BookReader() {
                     pageNumber={index + 1}
                     width={pageWidth}
                     scale={scale}
-                    renderTextLayer={false}
+                    renderTextLayer={true}
                     renderAnnotationLayer={false}
                     className="mb-2 shadow-lg"
-                    devicePixelRatio={2}
+                    devicePixelRatio={window.devicePixelRatio || 2}
                     onLoadSuccess={() => setPagesLoaded((prev) => prev + 1)}
                     loading={
                       <div
-                        className="flex items-center justify-center bg-card"
+                        className="flex items-center justify-center bg-muted/20"
                         style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
                       >
-                        <p className="text-xs text-muted-foreground">পৃষ্ঠা লোড হচ্ছে...</p>
+                        <p className="text-xs text-muted-foreground">পৃষ্ঠা {index + 1} লোড হচ্ছে...</p>
                       </div>
                     }
                     error={
