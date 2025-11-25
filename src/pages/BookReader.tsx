@@ -46,6 +46,7 @@ export default function BookReader() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string>("");
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [initialJumpDone, setInitialJumpDone] = useState(false);
 
   // Monitor online/offline status
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function BookReader() {
     setPagesLoaded(0);
     setMaxVisiblePage(0);
     setPdfUrl("");
+    setInitialJumpDone(false);
     
     // Load reading progress and bookmarks
     if (book) {
@@ -75,16 +77,19 @@ export default function BookReader() {
       
       // Check if URL has a specific page parameter
       const pageParam = searchParams.get('page');
-      const urlPage = pageParam ? parseInt(pageParam) || 1 : null;
+      const urlPage = pageParam ? parseInt(pageParam) || null : null;
       
-      if (urlPage !== null) {
+      if (urlPage !== null && urlPage !== 1) {
         // URL parameter takes priority over stored progress
-        console.log('Loading with URL page:', urlPage);
+        console.log('🎯 Initial load with URL page:', urlPage);
         setCurrentPage(urlPage);
-      } else if (progress) {
+      } else if (progress && progress.currentPage > 1) {
         // No URL parameter, use stored progress
-        console.log('Loading with stored progress page:', progress.currentPage);
+        console.log('🎯 Initial load with stored progress page:', progress.currentPage);
         setCurrentPage(progress.currentPage);
+      } else {
+        setCurrentPage(1);
+        setInitialJumpDone(true); // No jump needed, start at page 1
       }
       
       if (progress) {
@@ -166,6 +171,12 @@ export default function BookReader() {
     const container = document.getElementById('pdf-container');
     if (!container || numPages === 0) return;
 
+    // Don't track scroll until initial jump is complete
+    if (!initialJumpDone) {
+      console.log('⏸️ Scroll tracking paused - waiting for initial jump');
+      return;
+    }
+
     const handleScroll = () => {
       const pages = container.querySelectorAll('.react-pdf__Page');
       const containerRect = container.getBoundingClientRect();
@@ -196,7 +207,7 @@ export default function BookReader() {
 
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [numPages]);
+  }, [numPages, initialJumpDone]);
 
   if (!book) {
     return (
@@ -210,7 +221,7 @@ export default function BookReader() {
   }
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    console.log('PDF loaded successfully with pages:', numPages, 'for', book?.id, pdfUrl);
+    console.log('📄 PDF loaded successfully with', numPages, 'pages for', book?.id);
     setNumPages(numPages);
     setLoadError(null);
     
@@ -219,31 +230,54 @@ export default function BookReader() {
     const urlPage = pageParam ? parseInt(pageParam) || null : null;
     const targetPage = urlPage || currentPage;
     
-    console.log('onDocumentLoadSuccess - targetPage:', targetPage, 'currentPage:', currentPage, 'urlPage:', urlPage);
+    console.log('🎯 Target page:', targetPage, 'Current page:', currentPage, 'URL page:', urlPage);
     
-    if (targetPage > 12) {
-      // For deep page jumps, load up to target page + buffer immediately
-      console.log('Deep page jump detected, loading up to page:', targetPage + 10);
+    if (targetPage > 1) {
+      // Load up to target page + buffer immediately
+      console.log('📖 Loading pages up to:', targetPage + 10);
       setMaxVisiblePage(Math.min(numPages, targetPage + 10));
-      // Then scroll to target page after a brief delay for rendering
+      
+      // Jump to target page after rendering
       setTimeout(() => {
-        console.log('Jumping to page:', targetPage);
-        jumpToPage(targetPage);
+        console.log('🚀 Jumping to page:', targetPage);
+        const container = document.getElementById('pdf-container');
+        const pages = container?.querySelectorAll('.react-pdf__Page');
+        
+        if (pages && pages[targetPage - 1]) {
+          pages[targetPage - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
+          console.log('✅ Jump complete to page', targetPage);
+          // Enable scroll tracking after jump
+          setTimeout(() => {
+            setInitialJumpDone(true);
+            console.log('✅ Scroll tracking enabled');
+          }, 500);
+        } else {
+          console.log('⚠️ Target page not rendered yet, waiting...');
+          setTimeout(() => {
+            const container = document.getElementById('pdf-container');
+            const pages = container?.querySelectorAll('.react-pdf__Page');
+            if (pages && pages[targetPage - 1]) {
+              pages[targetPage - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
+              console.log('✅ Jump complete to page', targetPage, '(delayed)');
+              setTimeout(() => {
+                setInitialJumpDone(true);
+                console.log('✅ Scroll tracking enabled');
+              }, 500);
+            }
+          }, 800);
+        }
       }, 400);
     } else {
-      // Normal initial load - start with first 12 pages
+      // Starting at page 1, no jump needed
       setMaxVisiblePage(Math.min(numPages, 12));
-      if (targetPage > 1) {
-        setTimeout(() => {
-          jumpToPage(targetPage);
-        }, 200);
-      }
+      setInitialJumpDone(true);
+      console.log('✅ Starting at page 1, scroll tracking enabled');
     }
     
     // Preload more pages in background
     setTimeout(() => {
       setMaxVisiblePage((prev) => Math.min(numPages, Math.max(prev + 20, targetPage + 15)));
-    }, 1000);
+    }, 1200);
   }
 
   function onDocumentLoadError(error: Error) {
