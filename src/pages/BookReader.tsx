@@ -183,30 +183,49 @@ export default function BookReader() {
       const containerHeight = containerRect.height;
       const centerY = containerTop + containerHeight / 2;
 
-      let closestPage = 1;
+      let closestPageNumber = 1;
       let closestDistance = Infinity;
 
-      pages.forEach((page, index) => {
+      pages.forEach((page) => {
         const pageRect = page.getBoundingClientRect();
         const pageCenter = pageRect.top + pageRect.height / 2;
         const distance = Math.abs(centerY - pageCenter);
 
         if (distance < closestDistance) {
           closestDistance = distance;
-          closestPage = index + 1;
+          const attr = page.getAttribute('data-page-number');
+          const logicalPage = attr ? parseInt(attr, 10) || 1 : 1;
+          closestPageNumber = logicalPage;
         }
       });
 
-      setCurrentPage(closestPage);
-      // Aggressively preload pages ahead
+      setCurrentPage(closestPageNumber);
+      // Aggressively preload pages ahead based on real page number
       setMaxVisiblePage((prev) =>
-        Math.max(prev, Math.min(numPages, closestPage + 15))
+        Math.max(prev, Math.min(numPages, closestPageNumber + 15))
       );
     };
 
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
   }, [numPages, initialJumpDone]);
+
+  // For cached PDFs: after initial jump, gradually load all pages in background
+  useEffect(() => {
+    if (!isCachedPdf || !initialJumpDone || numPages === 0) return;
+
+    const interval = setInterval(() => {
+      setMaxVisiblePage((prev) => {
+        if (prev >= numPages) {
+          clearInterval(interval);
+          return prev;
+        }
+        return Math.min(numPages, prev + 20);
+      });
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, [isCachedPdf, initialJumpDone, numPages]);
 
   if (!book) {
     return (
@@ -267,11 +286,13 @@ export default function BookReader() {
             setTimeout(() => {
               setInitialJumpDone(true);
               
-              // Progressively expand window
+              // For cached PDFs, quickly expand to include beginning pages as well
               if (isCachedPdf) {
                 setTimeout(() => {
-                  setRenderStartPage(Math.max(1, targetPage - 30));
-                  setMaxVisiblePage(Math.min(numPages, targetPage + 40));
+                  setRenderStartPage(1);
+                  setMaxVisiblePage((prev) =>
+                    Math.min(numPages, Math.max(prev, targetPage + 40))
+                  );
                 }, 500);
               }
             }, 300);
