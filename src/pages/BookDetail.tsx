@@ -183,7 +183,7 @@ export default function BookDetail() {
                 পড়া শুরু করুন
               </Button>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <Button 
                   variant="outline" 
                   onClick={handleLibraryToggle}
@@ -191,14 +191,18 @@ export default function BookDetail() {
                   {inLibrary ? (
                     <>
                       <Heart className="mr-2 fill-current" size={18} />
-                      লাইব্রেরিতে আছে
+                      লাইব্রেরিতে
                     </>
                   ) : (
                     <>
                       <HeartOff className="mr-2" size={18} />
-                      লাইব্রেরিতে যুক্ত করুন
+                      লাইব্রেরি
                     </>
                   )}
+                </Button>
+                <Button variant="outline" onClick={handleDownload}>
+                  <BookOpen className="mr-2" size={18} />
+                  ডাউনলোড
                 </Button>
                 <Button variant="outline" onClick={handleShare}>
                   <Share2 className="mr-2" size={18} />
