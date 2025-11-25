@@ -47,6 +47,8 @@ export default function BookReader() {
   const [pdfUrl, setPdfUrl] = useState<string>("");
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [initialJumpDone, setInitialJumpDone] = useState(false);
+  const [isCachedPdf, setIsCachedPdf] = useState(false);
+  const [renderStartPage, setRenderStartPage] = useState(1);
 
   // Monitor online/offline status
   useEffect(() => {
@@ -111,26 +113,23 @@ export default function BookReader() {
       const cachedUrl = await pdfCache.getCachedPDF(book.pdfUrl);
       
       if (cachedUrl) {
-        console.log('Loading PDF from cache - instant load');
+        console.log('✅ Loading PDF from cache - instant load');
         setPdfUrl(cachedUrl);
-        // Cached PDFs load instantly, so prepare for quick rendering
-        const pageParam = searchParams.get('page');
-        const targetPage = pageParam ? parseInt(pageParam) || 1 : 1;
-        if (targetPage > 1) {
-          // Pre-set max visible page for faster initial render
-          setMaxVisiblePage(Math.min(book.pages || 999, targetPage + 10));
-        }
+        setIsCachedPdf(true);
       } else if (!navigator.onLine) {
         // Offline and no cache
         setLoadError('আপনি অফলাইনে আছেন এবং এই বইটি ক্যাশ করা নেই');
+        setIsCachedPdf(false);
       } else {
-        console.log('Loading PDF from network');
+        console.log('🌐 Loading PDF from network');
         setPdfUrl(book.pdfUrl);
+        setIsCachedPdf(false);
         // Cache in background
         pdfCache.cachePDF(book.pdfUrl, book.id).catch(console.error);
       }
     } catch (error) {
       console.error('Error loading PDF:', error);
+      setIsCachedPdf(false);
       if (!navigator.onLine) {
         setLoadError('অফলাইনে বইটি লোড করা যায়নি। প্রথমে অনলাইনে খুলুন।');
       } else {
@@ -221,7 +220,7 @@ export default function BookReader() {
   }
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    console.log('📄 PDF loaded successfully with', numPages, 'pages for', book?.id);
+    console.log('📄 PDF loaded successfully with', numPages, 'pages');
     setNumPages(numPages);
     setLoadError(null);
     
@@ -230,63 +229,63 @@ export default function BookReader() {
     const urlPage = pageParam ? parseInt(pageParam) || null : null;
     const targetPage = urlPage || currentPage;
     
-    console.log('🎯 Target page:', targetPage, 'Current page:', currentPage, 'URL page:', urlPage);
+    console.log('🎯 Target:', targetPage, 'Cached:', isCachedPdf);
     
     if (targetPage > 1) {
-      // CRITICAL FIX: Render FROM page 1 to target + buffer
-      // This ensures all pages before target are available for scroll
-      const initialBuffer = Math.min(numPages, targetPage + 12);
-      
-      console.log('⚡ Rendering pages 1 to', initialBuffer, 'for target', targetPage);
-      setMaxVisiblePage(initialBuffer);
+      if (isCachedPdf && targetPage > 20) {
+        // SMART WINDOW: For cached PDFs with deep page jumps
+        // Only render pages around target for INSTANT load
+        const windowStart = Math.max(1, targetPage - 15);
+        const windowEnd = Math.min(numPages, targetPage + 20);
+        
+        console.log('⚡ CACHED PDF: Smart window', windowStart, '-', windowEnd, 'for target', targetPage);
+        setRenderStartPage(windowStart);
+        setMaxVisiblePage(windowEnd);
+      } else {
+        // Network PDF or shallow page: render from page 1
+        const buffer = Math.min(numPages, targetPage + 12);
+        console.log('🌐 Full render 1 to', buffer);
+        setRenderStartPage(1);
+        setMaxVisiblePage(buffer);
+      }
       
       // Jump to target page after render
       setTimeout(() => {
-        console.log('🚀 Jumping to page:', targetPage);
         const container = document.getElementById('pdf-container');
         const pages = container?.querySelectorAll('.react-pdf__Page');
         
-        // Scroll to target page (0-indexed)
-        if (pages && pages[targetPage - 1]) {
-          pages[targetPage - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
-          console.log('✅ Jump complete to page', targetPage);
+        if (pages && pages.length > 0) {
+          // Find the page element for target
+          const targetElement = Array.from(pages).find(
+            page => page.getAttribute('data-page-number') === String(targetPage)
+          );
           
-          // Enable scroll tracking after jump
-          setTimeout(() => {
-            setInitialJumpDone(true);
-            console.log('✅ Scroll tracking enabled');
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
+            console.log('✅ Jump to page', targetPage);
             
-            // Load more pages ahead progressively
             setTimeout(() => {
-              setMaxVisiblePage(prev => Math.min(numPages, Math.max(prev, targetPage + 25)));
-              console.log('📖 Extended loading ahead');
-            }, 500);
-          }, 300);
-        } else {
-          console.log('⚠️ Target page not rendered yet, waiting...');
-          // Retry with longer wait
-          setTimeout(() => {
-            const container = document.getElementById('pdf-container');
-            const pages = container?.querySelectorAll('.react-pdf__Page');
-            if (pages && pages[targetPage - 1]) {
-              pages[targetPage - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
-              console.log('✅ Jump complete to page', targetPage, '(retry)');
-              setTimeout(() => {
-                setInitialJumpDone(true);
-              }, 300);
-            }
-          }, 1000);
+              setInitialJumpDone(true);
+              
+              // Progressively expand window
+              if (isCachedPdf) {
+                setTimeout(() => {
+                  setRenderStartPage(Math.max(1, targetPage - 30));
+                  setMaxVisiblePage(Math.min(numPages, targetPage + 40));
+                }, 500);
+              }
+            }, 300);
+          }
         }
       }, 400);
     } else {
-      // Starting at page 1, no jump needed
+      // Starting at page 1
+      setRenderStartPage(1);
       setMaxVisiblePage(Math.min(numPages, 15));
       setInitialJumpDone(true);
-      console.log('✅ Starting at page 1, scroll tracking enabled');
       
-      // Background load more pages
       setTimeout(() => {
-        setMaxVisiblePage(prev => Math.min(numPages, 30));
+        setMaxVisiblePage(Math.min(numPages, 30));
       }, 500);
     }
   }
@@ -399,8 +398,7 @@ export default function BookReader() {
   // Note: Initial page jump is now handled in onDocumentLoadSuccess for faster loading
 
   const pageWidth = Math.min(containerWidth * 0.95, 800);
-  const pagesToRender =
-    numPages > 0 ? maxVisiblePage : 0;
+  const pagesToRender = numPages > 0 ? maxVisiblePage - renderStartPage + 1 : 0;
   // Show loader until first 10 pages load
   const initialVisibleTarget = Math.min(10, numPages);
   const showInitialLoader =
@@ -576,35 +574,39 @@ export default function BookReader() {
               }
             >
               {numPages > 0 &&
-                Array.from({ length: pagesToRender }, (el, index) => (
-                  <Page
-                    key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                    width={pageWidth}
-                    scale={scale}
-                    renderTextLayer={true}
-                    renderAnnotationLayer={false}
-                    className="mb-2 shadow-lg"
-                    devicePixelRatio={window.devicePixelRatio || 2}
-                    onLoadSuccess={() => setPagesLoaded((prev) => prev + 1)}
-                    loading={
-                      <div
-                        className="flex items-center justify-center bg-muted/20"
-                        style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
-                      >
-                        <p className="text-xs text-muted-foreground">পৃষ্ঠা {index + 1} লোড হচ্ছে...</p>
-                      </div>
-                    }
-                    error={
-                      <div
-                        className="flex items-center justify-center bg-card"
-                        style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
-                      >
-                        <p className="text-sm text-destructive">পৃষ্ঠা {index + 1} লোড করা যায়নি</p>
-                      </div>
-                    }
-                  />
-                ))}
+                Array.from({ length: pagesToRender }, (_, index) => {
+                  const pageNumber = renderStartPage + index;
+                  return (
+                    <Page
+                      key={`page_${pageNumber}`}
+                      pageNumber={pageNumber}
+                      data-page-number={pageNumber}
+                      width={pageWidth}
+                      scale={scale}
+                      renderTextLayer={true}
+                      renderAnnotationLayer={false}
+                      className="mb-2 shadow-lg"
+                      devicePixelRatio={window.devicePixelRatio || 2}
+                      onLoadSuccess={() => setPagesLoaded((prev) => prev + 1)}
+                      loading={
+                        <div
+                          className="flex items-center justify-center bg-muted/20"
+                          style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
+                        >
+                          <p className="text-xs text-muted-foreground">পৃষ্ঠা {pageNumber} লোড হচ্ছে...</p>
+                        </div>
+                      }
+                      error={
+                        <div
+                          className="flex items-center justify-center bg-card"
+                          style={{ width: pageWidth * scale, height: pageWidth * scale * 1.4 }}
+                        >
+                          <p className="text-sm text-destructive">পৃষ্ঠা {pageNumber} লোড করা যায়নি</p>
+                        </div>
+                      }
+                    />
+                  );
+                })}
             </Document>
           )}
         </div>
