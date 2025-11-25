@@ -72,16 +72,31 @@ export default function BookReader() {
     // Load reading progress and bookmarks
     if (book) {
       const progress = getProgress(book.id);
-      if (progress) {
+      
+      // Check if URL has a specific page parameter
+      const pageParam = searchParams.get('page');
+      const urlPage = pageParam ? parseInt(pageParam) || 1 : null;
+      
+      if (urlPage !== null) {
+        // URL parameter takes priority over stored progress
+        console.log('Loading with URL page:', urlPage);
+        setCurrentPage(urlPage);
+      } else if (progress) {
+        // No URL parameter, use stored progress
+        console.log('Loading with stored progress page:', progress.currentPage);
         setCurrentPage(progress.currentPage);
+      }
+      
+      if (progress) {
         setBookmarkedPages(progress.bookmarks || []);
       }
+      
       setIsDownloaded(isInLibrary(book.id));
       
       // Load PDF from cache or fetch
       loadPDF();
     }
-  }, [book]);
+  }, [book, searchParams]);
 
   const loadPDF = async () => {
     if (!book) return;
@@ -199,26 +214,36 @@ export default function BookReader() {
     setNumPages(numPages);
     setLoadError(null);
     
-    // If user is jumping to a specific page, load up to that page + buffer
+    // Check if we need to jump to a specific page
     const pageParam = searchParams.get('page');
-    const targetPage = pageParam ? parseInt(pageParam) || 1 : 1;
+    const urlPage = pageParam ? parseInt(pageParam) || null : null;
+    const targetPage = urlPage || currentPage;
+    
+    console.log('onDocumentLoadSuccess - targetPage:', targetPage, 'currentPage:', currentPage, 'urlPage:', urlPage);
     
     if (targetPage > 12) {
       // For deep page jumps, load up to target page + buffer immediately
+      console.log('Deep page jump detected, loading up to page:', targetPage + 10);
       setMaxVisiblePage(Math.min(numPages, targetPage + 10));
       // Then scroll to target page after a brief delay for rendering
       setTimeout(() => {
+        console.log('Jumping to page:', targetPage);
         jumpToPage(targetPage);
-      }, 300);
+      }, 400);
     } else {
       // Normal initial load - start with first 12 pages
       setMaxVisiblePage(Math.min(numPages, 12));
+      if (targetPage > 1) {
+        setTimeout(() => {
+          jumpToPage(targetPage);
+        }, 200);
+      }
     }
     
     // Preload more pages in background
     setTimeout(() => {
       setMaxVisiblePage((prev) => Math.min(numPages, Math.max(prev + 20, targetPage + 15)));
-    }, 800);
+    }, 1000);
   }
 
   function onDocumentLoadError(error: Error) {
