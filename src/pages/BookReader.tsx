@@ -233,51 +233,73 @@ export default function BookReader() {
     console.log('🎯 Target page:', targetPage, 'Current page:', currentPage, 'URL page:', urlPage);
     
     if (targetPage > 1) {
-      // Load up to target page + buffer immediately
-      console.log('📖 Loading pages up to:', targetPage + 10);
-      setMaxVisiblePage(Math.min(numPages, targetPage + 10));
+      // For page jumps, render ONLY a small window around target page for instant display
+      // Window: target ± 3 pages
+      const windowStart = Math.max(1, targetPage - 3);
+      const windowEnd = Math.min(numPages, targetPage + 5);
       
-      // Jump to target page after rendering
+      console.log('⚡ Fast render window:', windowStart, '-', windowEnd, 'around target', targetPage);
+      setMaxVisiblePage(windowEnd);
+      
+      // Jump to target page IMMEDIATELY after minimal render
       setTimeout(() => {
         console.log('🚀 Jumping to page:', targetPage);
         const container = document.getElementById('pdf-container');
         const pages = container?.querySelectorAll('.react-pdf__Page');
         
-        if (pages && pages[targetPage - 1]) {
-          pages[targetPage - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
+        // Calculate which rendered page index to scroll to
+        const scrollIndex = targetPage - 1; // Pages are 0-indexed in array
+        
+        if (pages && pages[scrollIndex]) {
+          pages[scrollIndex].scrollIntoView({ behavior: 'auto', block: 'start' });
           console.log('✅ Jump complete to page', targetPage);
+          
           // Enable scroll tracking after jump
           setTimeout(() => {
             setInitialJumpDone(true);
             console.log('✅ Scroll tracking enabled');
-          }, 500);
+            
+            // NOW progressively load more pages in background
+            // Load backwards first (for scroll up)
+            setTimeout(() => {
+              const backwardEnd = Math.max(windowStart, targetPage - 15);
+              setMaxVisiblePage(prev => Math.max(prev, targetPage + 10));
+              console.log('📖 Background loading pages', backwardEnd, 'to', targetPage + 10);
+            }, 300);
+            
+            // Then load forward aggressively (for scroll down)
+            setTimeout(() => {
+              setMaxVisiblePage(prev => Math.max(prev, targetPage + 25));
+              console.log('📖 Extended loading to page', targetPage + 25);
+            }, 800);
+          }, 300);
         } else {
-          console.log('⚠️ Target page not rendered yet, waiting...');
+          console.log('⚠️ Target page not rendered yet, retrying...');
           setTimeout(() => {
             const container = document.getElementById('pdf-container');
             const pages = container?.querySelectorAll('.react-pdf__Page');
-            if (pages && pages[targetPage - 1]) {
-              pages[targetPage - 1].scrollIntoView({ behavior: 'auto', block: 'start' });
+            if (pages && pages[scrollIndex]) {
+              pages[scrollIndex].scrollIntoView({ behavior: 'auto', block: 'start' });
               console.log('✅ Jump complete to page', targetPage, '(delayed)');
               setTimeout(() => {
                 setInitialJumpDone(true);
                 console.log('✅ Scroll tracking enabled');
-              }, 500);
+              }, 300);
             }
-          }, 800);
+          }, 600);
         }
-      }, 400);
+      }, 200); // Reduced delay for faster jump
     } else {
       // Starting at page 1, no jump needed
       setMaxVisiblePage(Math.min(numPages, 12));
       setInitialJumpDone(true);
       console.log('✅ Starting at page 1, scroll tracking enabled');
+      
+      // Background load more pages
+      setTimeout(() => {
+        setMaxVisiblePage(prev => Math.min(numPages, 25));
+      }, 500);
     }
-    
-    // Preload more pages in background
-    setTimeout(() => {
-      setMaxVisiblePage((prev) => Math.min(numPages, Math.max(prev + 20, targetPage + 15)));
-    }, 1200);
   }
 
   function onDocumentLoadError(error: Error) {
