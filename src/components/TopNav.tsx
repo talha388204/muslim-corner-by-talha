@@ -11,6 +11,7 @@ export const TopNav = () => {
 
   useEffect(() => {
     const handler = (e: Event) => {
+      console.log('beforeinstallprompt event fired');
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallButton(true);
@@ -20,27 +21,50 @@ export const TopNav = () => {
 
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('App already installed');
       setShowInstallButton(false);
+    } else {
+      // Show button after a short delay to ensure PWA is ready
+      const timer = setTimeout(() => {
+        if (!deferredPrompt) {
+          console.log('Showing install button (no beforeinstallprompt yet)');
+          setShowInstallButton(true);
+        }
+      }, 1000);
+      
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('beforeinstallprompt', handler);
+      };
     }
 
     return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+  }, [deferredPrompt]);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
-      toast.error("Installation not available");
+      console.log('No deferred prompt available');
+      toast.info("অ্যাপ ইনস্টল করতে ব্রাউজারের মেনু থেকে 'Add to Home Screen' অপশন ব্যবহার করুন");
       return;
     }
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      toast.success("অ্যাপ ইনস্টল হচ্ছে...");
-      setShowInstallButton(false);
+    try {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('Install prompt outcome:', outcome);
+      
+      if (outcome === 'accepted') {
+        toast.success("অ্যাপ ইনস্টল হচ্ছে...");
+        setShowInstallButton(false);
+      } else {
+        toast.info("ইনস্টল বাতিল করা হয়েছে");
+      }
+      
+      setDeferredPrompt(null);
+    } catch (error) {
+      console.error('Install prompt error:', error);
+      toast.error("ইনস্টল করতে সমস্যা হয়েছে");
     }
-    
-    setDeferredPrompt(null);
   };
 
   return (
