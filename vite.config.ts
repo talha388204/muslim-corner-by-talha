@@ -15,13 +15,13 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon-192.jpg", "icon-512.jpg", "favicon.ico"],
+      includeAssets: ["icon-192.jpg", "icon-512.jpg", "favicon.png"],
       manifest: {
         name: "মুসলিম কর্নার - বাংলা বই পড়ার অ্যাপ",
         short_name: "Muslim Corner",
         description: "আপনার প্রিয় বাংলা বই পড়ুন যেকোনো সময়, যেকোনো জায়গায়। ইসলামিক বই, সাহিত্য, এবং আরও অনেক কিছু।",
-        theme_color: "#ff9933",
-        background_color: "#1a1f2e",
+        theme_color: "#0d6b4f",
+        background_color: "#0f3d30",
         display: "standalone",
         orientation: "portrait",
         scope: "/",

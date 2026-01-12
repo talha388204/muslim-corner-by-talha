@@ -1,9 +1,9 @@
 {
-  "name": "Muslim Corner - ফ্রি বই পড়ার অ্যাপ",
+  "name": "মুসলিম কর্নার - বাংলা বই পড়ার অ্যাপ",
   "short_name": "Muslim Corner",
-  "description": "বাংলা বই পড়ুন যেকোনো সময়, যেকোনো জায়গায়",
-  "theme_color": "#ff9933",
-  "background_color": "#1a1f2e",
+  "description": "আপনার প্রিয় বাংলা বই পড়ুন যেকোনো সময়, যেকোনো জায়গায়। ইসলামিক বই, সাহিত্য, এবং আরও অনেক কিছু।",
+  "theme_color": "#0d6b4f",
+  "background_color": "#0f3d30",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
